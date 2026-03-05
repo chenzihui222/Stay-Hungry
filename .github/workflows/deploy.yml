@@ -1,74 +1,76 @@
 name: VC Tracker Deploy
-'on':
-  workflow_dispatch: {}
+
+on:
+  workflow_dispatch:
+
 permissions:
   contents: write
   pages: write
   id-token: write
+
 jobs:
   crawl:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-    - name: Install deps
-      run: pip install requests beautifulsoup4 lxml
-    - name: Crawl
-      run: 'cd "News-about-VC"
+      - uses: actions/checkout@v4
 
-        mkdir -p data static
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-        python3 -c "
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
 
-        import sys
+      - name: Crawl
+        run: |
+          mkdir -p data static
+          python3 - <<EOF
+import sys
+from vc_tracker.multi_crawler import MultiCrawler
+import shutil, os
 
-        sys.path.insert(0, ''.'')
+mc = MultiCrawler()
+mc.crawl_selected(['hackernews','paulgraham'], max_items_per_site=20)
+mc.save_data()
 
-        from vc_tracker.multi_crawler import MultiCrawler
+os.makedirs("static", exist_ok=True)
+shutil.copy("data/multi_source_news.json", "static/data.json")
 
-        import shutil
+print("Completed:", len(mc.data))
+EOF
 
-        mc = MultiCrawler()
+      - name: Commit updated data
+        run: |
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+          git add data/ static/
+          git commit -m "Update data" || echo "No changes"
+          git push || echo "No push"
 
-        mc.crawl_selected([''hackernews'', ''paulgraham''], max_items_per_site=20)
-
-        mc.save_data()
-
-        shutil.copy(''data/multi_source_news.json'', ''static/data.json'')
-
-        print(''Completed:'', len(mc.data))
-
-        "'
-    - name: Commit
-      run: 'git config user.email "action@github.com"
-
-        git config user.name "GitHub Action"
-
-        git add "News-about-VC/data/" "News-about-VC/static/"
-
-        git commit -m "Update data" || echo "No changes"
-
-        git push || echo "No push"'
   deploy:
     needs: crawl
     runs-on: ubuntu-latest
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/configure-pages@v4
-    - name: Prepare
-      run: 'mkdir -p docs
+      - uses: actions/checkout@v4
 
-        cp "News-about-VC/static/index.html" docs/
+      - uses: actions/configure-pages@v4
 
-        cp "News-about-VC/static/data.json" docs/ 2>/dev/null || echo ''{"data":[]}''
-        > docs/data.json'
-    - uses: actions/upload-pages-artifact@v3
-      with:
-        path: docs
-    - id: deployment
-      uses: actions/deploy-pages@v4
+      - name: Prepare site
+        run: |
+          mkdir -p docs
+          cp static/index.html docs/
+          cp static/data.json docs/ 2>/dev/null || echo '{"data":[]}' > docs/data.json
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
