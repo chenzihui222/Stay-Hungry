@@ -5,48 +5,79 @@
 <!-- 截图占位：将实际截图放到 docs/screenshot.png 后取消注释 -->
 <!-- ![Dashboard Screenshot](docs/screenshot.png) -->
 
+## 🚀 快速启动（新方式 - 支持实时刷新）
+
+### 第一步：启动API服务器（必需）
+
+打开**新终端窗口**，运行：
+
+```bash
+cd "News about VC"
+python3 scripts/api_server.py
+```
+
+你会看到：
+```
+🚀 VC雷达 API服务器已启动
+   地址: http://localhost:8081
+   刷新接口: http://localhost:8081/api/refresh
+```
+
+**保持此窗口运行！**
+
+### 第二步：启动Web服务器
+
+在**另一个终端窗口**，运行：
+
+```bash
+cd "News about VC"
+python3 -m http.server 8080 --directory static
+```
+
+### 第三步：打开浏览器
+
+访问：http://localhost:8080
+
+点击 **"📡 实时刷新"** 按钮即可重新爬取最新数据！
+
+## 📡 实时刷新功能
+
+点击页面右上角的 **"📡 实时刷新"** 按钮，系统会：
+
+1. 🔄 重新爬取5个VC源的最新内容
+2. 📊 获取比之前更多的数据（每站最多50条）
+3. 💾 更新数据库
+4. 📱 页面自动显示最新内容（按时间排序）
+
+## 📊 当前数据量
+
+- **数据库总量**: 163条（可继续增长）
+- **显示方式**: 按发布时间排序，最新内容在前
+- **数据来源**:
+  - Paul Graham: 48条
+  - Sam Altman: 46条  
+  - Hacker News: 29条
+  - Fred Wilson: 20条
+  - Benedict Evans: 20条
+
 ## 数据源
 
 | 来源 | 网址 | 抓取方式 |
 |------|------|----------|
 | Paul Graham | paulgraham.com | HTML 解析 |
 | Hacker News | news.ycombinator.com | HTML 解析 |
-| Sam Altman | blog.samaltman.com | Atom Feed |
+| Sam Altman | blog.samaltman.com | HTML 解析 |
 | Fred Wilson / AVC | avc.xyz | RSS Feed |
 | Benedict Evans | ben-evans.com | RSS Feed |
 
-## 快速开始
-
-```bash
-# 安装依赖
-make install
-
-# 抓取全部数据源
-make crawl
-
-# 启动 Web 仪表盘 (localhost:8081)
-make serve
-```
-
-浏览器访问 `http://localhost:8081`，点击「刷新」按钮即可实时抓取最新数据。
-
-静态版本部署在 GitHub Pages，通过 `static/index.html` 加载 `static/data.json` 展示数据。
-
-## Makefile 命令
-
-| 命令 | 说明 |
-|------|------|
-| `make install` | 安装 Python 依赖 |
-| `make crawl` | 抓取全部 5 个数据源 |
-| `make serve` | 启动 Web 服务器 (端口 8081) |
-| `make stop` | 停止 Web 服务器 |
-| `make restart` | 重启 Web 服务器 |
-| `make test` | 运行 pytest 测试套件 |
-| `make clean` | 清理 `__pycache__` 和临时文件 |
-
 ## CLI 用法
 
-所有命令通过 `python main.py <子命令>` 调用。
+### 手动刷新数据
+
+```bash
+# 刷新全部数据源（最大化获取）
+python3 scripts/refresh_data.py
+```
 
 ### 多站点抓取
 
@@ -59,7 +90,7 @@ python main.py multi-crawl --pg --hn        # Paul Graham + Hacker News
 python main.py multi-crawl --sa --fw --be   # Sam Altman + Fred Wilson + Benedict Evans
 
 # 限制每站点最大条目数
-python main.py multi-crawl --all --max-items 20
+python main.py multi-crawl --all --max-items 50
 ```
 
 站点缩写：`--pg` Paul Graham / `--hn` Hacker News / `--sa` Sam Altman / `--fw` Fred Wilson / `--be` Benedict Evans
@@ -73,73 +104,54 @@ python main.py list --limit 20              # 限制显示条数
 python main.py list --refresh               # 先刷新再列出
 ```
 
-### 刷新数据
-
-```bash
-python main.py refresh --all                # 刷新全部数据源
-python main.py refresh --pg --hn            # 刷新指定站点
-```
-
-### 分析与可视化
-
-```bash
-python main.py analyze                      # 赛道热度、轮次分布、时间趋势
-python main.py visualize                    # 生成图表 (PNG + HTML)
-python main.py report --format html         # 生成 HTML 分析报告
-```
-
 ## 项目结构
 
 ```
 news_about_vc/
 ├── main.py                  # CLI 入口
-├── web_server.py            # Web 服务器 (端口 8081，内嵌前端)
-├── gui_table.py             # 桌面 GUI 表格
-├── Makefile                 # 常用命令快捷方式
-├── requirements.txt         # Python 依赖
-├── pytest.ini               # pytest 配置
-├── config/
-│   └── settings.py          # 全局配置 (目录、关键词、图表参数)
-├── vc_tracker/
-│   ├── __init__.py          # 包定义与版本号
-│   ├── crawler.py           # 单站点爬虫
-│   ├── multi_crawler.py     # 多站点爬虫 (5 源聚合、去重、原子写入)
-│   ├── analyzer.py          # 数据分析 (pandas)
-│   ├── visualizer.py        # 图表可视化
-│   └── utils.py             # 工具函数 (HTML 报告生成等)
+├── scripts/
+│   ├── api_server.py        # API服务器（实时刷新后端）
+│   └── refresh_data.py      # 数据刷新脚本
 ├── static/
-│   ├── index.html           # GitHub Pages 静态页面
-│   └── data.json            # 静态数据文件
-├── tests/
-│   ├── test_news_item.py    # NewsItem 单元测试
-│   ├── test_multi_crawler.py # 多站点爬虫测试
-│   └── test_integration_crawlers.py # 网络集成测试
-├── data/                    # 运行时数据 (已 gitignore)
-└── output/
-    ├── charts/              # 生成的图表
-    └── reports/             # 生成的报告
+│   ├── index.html           # Web仪表盘
+│   └── data.json            # 数据文件
+├── vc_tracker/
+│   ├── multi_crawler.py     # 多站点爬虫
+│   ├── crawler.py           # 单站点爬虫
+│   ├── analyzer.py          # 数据分析
+│   └── visualizer.py        # 图表可视化
+├── data/                    # 运行时数据
+└── output/                  # 输出目录
 ```
+
+## 🛠️ 故障排除
+
+### 点击刷新后提示"请先启动API服务器"
+
+**原因**: API服务器没有运行
+
+**解决**: 新建终端运行 `python3 scripts/api_server.py`
+
+### 页面加载失败
+
+**原因**: Web服务器没有运行
+
+**解决**: 运行 `python3 -m http.server 8080 --directory static`
+
+### 如何停止服务
+
+按 `Ctrl+C` 在对应的终端窗口中停止服务
 
 ## 技术栈
 
 | 类别 | 技术 |
 |------|------|
 | 语言 | Python 3 |
-| Web 服务 | `http.server` (标准库) |
+| Web服务 | http.server (标准库) |
+| API服务 | http.server (自定义Handler) |
 | 爬虫 | requests, BeautifulSoup4, feedparser, lxml |
 | 数据分析 | pandas |
-| 可视化 | matplotlib, seaborn, plotly, wordcloud, jieba |
-| 测试 | pytest |
-| 部署 | GitHub Actions + GitHub Pages |
-
-## 主要特性
-
-- **标题去重** -- 基于标题自动去重，避免重复条目
-- **随机排序** -- 每次加载随机打乱显示顺序
-- **XSS 防护** -- 前端 `escapeHtml` / `sanitizeUrl` 防注入
-- **线程安全** -- 爬虫使用 `threading.Lock` 保护并发访问
-- **原子写入** -- 数据保存使用 `os.replace` 确保文件完整性
-- **响应式布局** -- Web 仪表盘适配桌面和移动端
+| 前端 | 原生 HTML5 + CSS3 + JavaScript |
 
 ## License
 

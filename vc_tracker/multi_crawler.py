@@ -96,7 +96,7 @@ class NewsItem:
 class BaseCrawler:
     """爬虫基类"""
     
-    def __init__(self, source_name: str, base_url: str, delay: float = 2.0):
+    def __init__(self, source_name: str, base_url: str, delay: float = 0.5):
         self.source_name = source_name
         self.base_url = base_url
         self.delay = delay
@@ -105,7 +105,6 @@ class BaseCrawler:
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
             'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-            'Accept-Encoding': 'gzip, deflate, br',
             'Connection': 'keep-alive',
         }
         self.session.headers.update(self.headers)
@@ -114,7 +113,7 @@ class BaseCrawler:
         """随机延迟"""
         time.sleep(self.delay + random.uniform(0, 1))
         
-    def _make_request(self, url: str, retries: int = 0, timeout: int = 30) -> Optional[requests.Response]:
+    def _make_request(self, url: str, retries: int = 0, timeout: int = 15) -> Optional[requests.Response]:
         """发送HTTP请求，支持重试"""
         try:
             self._random_delay()
@@ -172,7 +171,7 @@ class PaulGrahamCrawler(BaseCrawler):
     """Paul Graham 文章爬虫 - 抓取创业与投资相关文章"""
     
     def __init__(self):
-        super().__init__('Paul Graham', 'https://paulgraham.com', 1.5)
+        super().__init__('Paul Graham', 'https://paulgraham.com', 0.3)
     
     def crawl(self, max_items: int = 50) -> List[NewsItem]:
         """抓取Paul Graham文章列表"""
@@ -241,7 +240,7 @@ class HackerNewsCrawler(BaseCrawler):
     """Hacker News 爬虫 - 抓取最新热门文章"""
     
     def __init__(self):
-        super().__init__('Hacker News', 'https://news.ycombinator.com', 1.0)
+        super().__init__('Hacker News', 'https://news.ycombinator.com', 0.3)
     
     def crawl(self, max_items: int = 50) -> List[NewsItem]:
         """抓取Hacker News最新文章"""
@@ -419,15 +418,95 @@ class RSSCrawler(BaseCrawler):
 
 
 
-class SamAltmanCrawler(RSSCrawler):
-    """Sam Altman 博客爬虫"""
+class SamAltmanCrawler(BaseCrawler):
+    """Sam Altman 博客爬虫 - 网页版"""
 
     def __init__(self):
-        super().__init__(
-            source_name='Sam Altman',
-            base_url='https://blog.samaltman.com',
-            feed_url='https://blog.samaltman.com/posts.atom',
-        )
+        super().__init__('Sam Altman', 'https://blog.samaltman.com', 0.3)
+
+    def crawl(self, max_items: int = 50) -> List[NewsItem]:
+        """抓取Sam Altman博客文章"""
+        logger.info(f"[{self.source_name}] 开始抓取文章")
+        news_items = []
+        seen_titles = set()
+
+        try:
+            # 抓取多页
+            page = 1
+            while len(news_items) < max_items and page <= 5:
+                if page == 1:
+                    url = 'https://blog.samaltman.com/'
+                else:
+                    url = f'https://blog.samaltman.com/?page={page}'
+
+                response = self._make_request(url)
+                if not response:
+                    break
+
+                soup = BeautifulSoup(response.text, 'lxml')
+
+                # Sam Altman博客结构：每篇文章在 <article class="post"> 中
+                # 标题在 <h2><a href="...">标题</a></h2>
+                articles = soup.find_all('article', class_='post')
+                
+                logger.info(f"[{self.source_name}] 第{page}页找到 {len(articles)} 篇文章")
+
+                for article in articles:
+                    if len(news_items) >= max_items:
+                        break
+
+                    try:
+                        # 获取标题
+                        title_elem = article.find('h2')
+                        if not title_elem:
+                            continue
+                            
+                        link_elem = title_elem.find('a', href=True)
+                        if not link_elem:
+                            continue
+
+                        title = link_elem.get_text(strip=True)
+                        href = str(link_elem.get('href', ''))
+                        
+                        if not title or not href or title in seen_titles:
+                            continue
+                            
+                        seen_titles.add(title)
+                        full_url = urljoin(self.base_url, href)
+
+                        news_item = NewsItem(
+                            title=title,
+                            url=full_url,
+                            source=self.source_name,
+                            publish_time=datetime.now().isoformat(),
+                            summary='Sam Altman关于创业、AI和科技的观点',
+                            sector='AI & Startups'
+                        )
+                        news_items.append(news_item)
+                        logger.info(f"[{self.source_name}] 添加文章: {title[:50]}...")
+
+                    except Exception as e:
+                        logger.debug(f"[{self.source_name}] 解析文章时出错: {e}")
+                        continue
+
+                # 检查是否有下一页
+                next_link = soup.find('a', text=re.compile(r'Next', re.I))
+                if not next_link:
+                    # 尝试其他方式找到下一页
+                    pagination = soup.find('div', class_=re.compile(r'pagination', re.I))
+                    if pagination:
+                        next_link = pagination.find('a', text=re.compile(r'[>›]|next', re.I))
+
+                if not next_link or len(articles) == 0:
+                    break
+
+                page += 1
+
+        except Exception as e:
+            logger.error(f"[{self.source_name}] 抓取失败: {e}")
+
+        logger.info(f"[{self.source_name}] 共抓取到 {len(news_items)} 篇文章")
+        return news_items
 
 
 class FredWilsonCrawler(RSSCrawler):
@@ -489,18 +568,39 @@ class MultiCrawler:
         return filtered
     
     def crawl_all(self, max_items_per_site: int = 30) -> List[NewsItem]:
-        """抓取所有站点"""
+        """并行抓取所有站点 - 优化版本"""
         logger.info("=" * 60)
-        logger.info("开始抓取所有站点")
+        logger.info("开始并行抓取所有站点")
         logger.info("=" * 60)
 
         all_news = []
         self.title_cache.clear()
-
-        for source, crawler in self.crawlers.items():
+        
+        # 使用线程池并行爬取
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+        
+        def crawl_single_source(source_name, crawler):
+            """爬取单个源"""
             try:
+                start_time = time.time()
                 news_items = crawler.crawl(max_items=max_items_per_site)
-
+                elapsed = time.time() - start_time
+                logger.info(f"[{source_name}] 爬取完成，耗时 {elapsed:.1f}s，获取 {len(news_items)} 条")
+                return source_name, news_items
+            except Exception as e:
+                logger.error(f"[{source_name}] 抓取异常: {e}")
+                return source_name, []
+        
+        # 并行执行所有爬虫
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            future_to_source = {
+                executor.submit(crawl_single_source, source, crawler): source 
+                for source, crawler in self.crawlers.items()
+            }
+            
+            for future in as_completed(future_to_source):
+                source_name, news_items = future.result()
+                
                 source_count = 0
                 for item in news_items:
                     title_key = item.title.lower().strip()
@@ -508,11 +608,8 @@ class MultiCrawler:
                         self.title_cache.add(title_key)
                         all_news.append(item)
                         source_count += 1
-
-                logger.info(f"[{source}] 抓取 {len(news_items)} 条，去重后 {source_count} 条")
                 
-            except Exception as e:
-                logger.error(f"[{source}] 抓取异常: {e}")
+                logger.info(f"[{source_name}] 去重后保留 {source_count} 条")
         
         # 按发布时间排序（最新的在前）
         random.shuffle(all_news)
