@@ -46,13 +46,13 @@ class SiteGenerator:
         data = {}
         
         try:
-            # 加载市场报告
-            market_files = list(REPORTS_DIR.glob('market_report_*.json'))
-            if market_files:
-                latest_market = max(market_files, key=lambda p: p.stat().st_mtime)
-                with open(latest_market, 'r', encoding='utf-8') as f:
-                    data['market'] = json.load(f)
-                logger.info(f"加载市场报告: {latest_market.name}")
+            # 加载科创板报告
+            star_market_files = list(REPORTS_DIR.glob('star_market_report_*.json'))
+            if star_market_files:
+                latest_star = max(star_market_files, key=lambda p: p.stat().st_mtime)
+                with open(latest_star, 'r', encoding='utf-8') as f:
+                    data['star_market'] = json.load(f)
+                logger.info(f"加载科创板报告: {latest_star.name}")
             
             # 加载VC/PE报告
             vcpe_files = list(REPORTS_DIR.glob('vcpe_report_*.json'))
@@ -219,7 +219,10 @@ class SiteGenerator:
         try:
             logger.info("生成科创板页面...")
             
-            market_data = data.get('market', {})
+            star_data = data.get('star_market', {})
+            summary = star_data.get('summary', {})
+            top_companies = star_data.get('top_companies', [])
+            ipo_data = star_data.get('ipo_data', {})
             
             html_content = f"""<!DOCTYPE html>
 <html lang="zh-CN">
@@ -235,54 +238,94 @@ class SiteGenerator:
 
     <main class="container">
         <h2>科创板市场分析</h2>
-        <p class="update-time">数据更新: {self.today}</p>
+        <p class="update-time">数据来源: 上海证券交易所 | 更新日期: {self.today}</p>
         
         <section class="metrics-grid">
             <div class="metric-card">
-                <h4>科创50指数</h4>
-                <div class="big-number">{market_data.get('market_stats', {}).get('latest_close', 'N/A')}</div>
-                <div class="change {'positive' if market_data.get('market_stats', {}).get('latest_change_pct', 0) > 0 else 'negative'}">
-                    {market_data.get('market_stats', {}).get('latest_change_pct', 'N/A')}%
-                </div>
-            </div>
-            
-            <div class="metric-card">
-                <h4>平均市盈率</h4>
-                <div class="big-number">{market_data.get('valuation', {}).get('avg_pe', 'N/A') if market_data.get('valuation', {}).get('avg_pe') else 'N/A'}</div>
-                <div class="label">倍</div>
-            </div>
-            
-            <div class="metric-card">
-                <h4>上市公司数</h4>
-                <div class="big-number">560+</div>
+                <h4>上市公司总数</h4>
+                <div class="big-number">{summary.get('total_companies', 'N/A')}</div>
                 <div class="label">家</div>
             </div>
             
             <div class="metric-card">
-                <h4>近12月IPO</h4>
-                <div class="big-number">{market_data.get('ipo', {}).get('total_ipo_12m', 'N/A')}</div>
-                <div class="label">家</div>
+                <h4>总市值</h4>
+                <div class="big-number">{summary.get('total_market_cap', 'N/A'):.0f}</div>
+                <div class="label">亿元</div>
+            </div>
+            
+            <div class="metric-card">
+                <h4>平均市值</h4>
+                <div class="big-number">{summary.get('avg_market_cap', 'N/A'):.0f}</div>
+                <div class="label">亿元</div>
+            </div>
+            
+            <div class="metric-card">
+                <h4>覆盖行业</h4>
+                <div class="big-number">{summary.get('industry_count', 'N/A')}</div>
+                <div class="label">个</div>
             </div>
         </section>
 
-        <section class="charts">
-            <h3>估值分布</h3>
-            <div id="valuation-chart" style="width:100%;height:400px;"></div>
-            
-            <h3>行业分布</h3>
-            <div id="industry-chart" style="width:100%;height:400px;"></div>
+        <section class="charts" style="background: var(--card-bg); padding: 30px; border-radius: 16px; margin: 30px 0;">
+            <h3 style="color: var(--primary-dark); margin-bottom: 20px;">📈 近12个月IPO趋势</h3>
+            <div id="ipo-chart" style="width:100%;height:400px;"></div>
         </section>
 
-        <section class="report-section">
-            <h3>详细报告</h3>
-            <p>查看完整的市场分析报告：</p>
-            <a href="reports/market_report_{self.today}.md" class="btn" target="_blank">查看报告</a>
+        <section style="background: var(--card-bg); padding: 30px; border-radius: 16px; margin: 30px 0; box-shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.1);">
+            <h3 style="color: var(--primary-dark); margin-bottom: 25px;">🏆 市值Top 10公司</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">排名</th>
+                        <th>代码</th>
+                        <th>名称</th>
+                        <th>行业</th>
+                        <th style="text-align: right;">市值(亿元)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {''.join([f"<tr><td>{idx}</td><td>{comp['code']}</td><td><strong>{comp['name']}</strong></td><td>{comp['industry']}</td><td style='text-align: right; font-weight: 600; color: var(--primary-color);'>{comp['market_cap']:.2f}</td></tr>" for idx, comp in enumerate(top_companies[:10], 1)]) if top_companies else '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">暂无数据</td></tr>'}
+                </tbody>
+            </table>
+        </section>
+
+        <section class="report-section" style="text-align: center; padding: 40px;">
+            <h3 style="margin-bottom: 20px;">查看完整市场分析报告</h3>
+            <p style="color: var(--text-muted); margin-bottom: 25px;">获取详细的行业分布、IPO分析和市场洞察</p>
+            <a href="reports/star_market_report_{self.today}.md" class="btn" target="_blank" style="padding: 15px 40px; font-size: 16px;">📊 查看详细报告</a>
         </section>
     </main>
 
 {self.get_footer()}
 
-    <script src="static/js/charts.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        // IPO趋势图表
+        const ipoData = {ipo_data};
+        if (ipoData && ipoData.months) {{
+            const trace1 = {{
+                x: ipoData.months,
+                y: ipoData.ipo_counts,
+                type: 'bar',
+                name: 'IPO数量',
+                marker: {{
+                    color: '#f97316',
+                    opacity: 0.8
+                }}
+            }};
+            
+            const layout = {{
+                title: '科创板IPO发行数量趋势',
+                xaxis: {{ title: '月份' }},
+                yaxis: {{ title: 'IPO数量(家)' }},
+                font: {{ family: '-apple-system, BlinkMacSystemFont, sans-serif' }},
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)'
+            }};
+            
+            Plotly.newPlot('ipo-chart', [trace1], layout, {{responsive: true}});
+        }}
+    </script>
 </body>
 </html>"""
             

@@ -1,0 +1,202 @@
+[
+  {
+    "code": "688981",
+    "name": "中芯国际",
+    "industry": "半导体",
+    "market_cap": 4500.5,
+    "listing_date": "2020-07-16",
+    "price": 56.32
+  },
+  {
+    "code": "688111",
+    "name": "金山办公",
+    "industry": "软件服务",
+    "market_cap": 2100.3,
+    "listing_date": "2019-11-18",
+    "price": 455.6
+  },
+  {
+    "code": "688012",
+    "name": "中微公司",
+    "industry": "半导体设备",
+    "market_cap": 1200.8,
+    "listing_date": "2019-07-22",
+    "price": 194.28
+  },
+  {
+    "code": "688036",
+    "name": "传音控股",
+    "industry": "消费电子",
+    "market_cap": 980.6,
+    "listing_date": "2019-09-30",
+    "price": 121.8
+  },
+  {
+    "code": "688169",
+    "name": "石头科技",
+    "industry": "智能家居",
+    "market_cap": 850.2,
+    "listing_date": "2020-02-21",
+    "price": 648.0
+  },
+  {
+    "code": "688396",
+    "name": "华润微",
+    "industry": "半导体",
+    "market_cap": 780.4,
+    "listing_date": "2020-02-27",
+    "price": 59.08
+  },
+  {
+    "code": "688599",
+    "name": "天合光能",
+    "industry": "新能源",
+    "market_cap": 1200.9,
+    "listing_date": "2020-06-10",
+    "price": 55.22
+  },
+  {
+    "code": "688561",
+    "name": "奇安信",
+    "industry": "网络安全",
+    "market_cap": 520.3,
+    "listing_date": "2020-07-22",
+    "price": 76.3
+  },
+  {
+    "code": "688777",
+    "name": "中控技术",
+    "industry": "工业软件",
+    "market_cap": 680.5,
+    "listing_date": "2020-11-24",
+    "price": 86.18
+  },
+  {
+    "code": "688063",
+    "name": "派能科技",
+    "industry": "储能",
+    "market_cap": 450.8,
+    "listing_date": "2020-12-30",
+    "price": 256.8
+  },
+  {
+    "code": "688538",
+    "name": "和辉光电",
+    "industry": "显示面板",
+    "market_cap": 380.2,
+    "listing_date": "2021-05-28",
+    "price": 2.74
+  },
+  {
+    "code": "688607",
+    "name": "康众医疗",
+    "industry": "医疗器械",
+    "market_cap": 120.5,
+    "listing_date": "2021-02-01",
+    "price": 24.58
+  },
+  {
+    "code": "688686",
+    "name": "奥普特",
+    "industry": "机器视觉",
+    "market_cap": 280.6,
+    "listing_date": "2020-12-31",
+    "price": 230.2
+  },
+  {
+    "code": "688819",
+    "name": "天能股份",
+    "industry": "动力电池",
+    "market_cap": 550.4,
+    "listing_date": "2021-01-18",
+    "price": 56.68
+  },
+  {
+    "code": "688303",
+    "name": "大全能源",
+    "industry": "光伏材料",
+    "market_cap": 920.7,
+    "listing_date": "2021-07-22",
+    "price": 42.95
+  },
+  {
+    "code": "688005",
+    "name": "容百科技",
+    "industry": "电池材料",
+    "market_cap": 380.2,
+    "listing_date": "2019-07-22",
+    "price": 78.56
+  },
+  {
+    "code": "688008",
+    "name": "澜起科技",
+    "industry": "芯片设计",
+    "market_cap": 890.5,
+    "listing_date": "2019-07-22",
+    "price": 78.3
+  },
+  {
+    "code": "688009",
+    "name": "中国通号",
+    "industry": "轨道交通",
+    "market_cap": 650.3,
+    "listing_date": "2019-07-22",
+    "price": 6.14
+  },
+  {
+    "code": "688088",
+    "name": "虹软科技",
+    "industry": "人工智能",
+    "market_cap": 180.6,
+    "listing_date": "2019-07-22",
+    "price": 44.56
+  },
+  {
+    "code": "688126",
+    "name": "沪硅产业",
+    "industry": "半导体材料",
+    "market_cap": 720.8,
+    "listing_date": "2020-04-20",
+    "price": 26.28
+  },
+  {
+    "code": "688185",
+    "name": "康希诺",
+    "industry": "生物制品",
+    "market_cap": 280.4,
+    "listing_date": "2020-08-13",
+    "price": 113.45
+  },
+  {
+    "code": "688256",
+    "name": "寒武纪",
+    "industry": "人工智能芯片",
+    "market_cap": 850.6,
+    "listing_date": "2020-07-20",
+    "price": 204.0
+  },
+  {
+    "code": "688289",
+    "name": "圣湘生物",
+    "industry": "医疗器械",
+    "market_cap": 150.2,
+    "listing_date": "2020-08-28",
+    "price": 25.58
+  },
+  {
+    "code": "688390",
+    "name": "固德威",
+    "industry": "光伏设备",
+    "market_cap": 280.5,
+    "listing_date": "2020-09-04",
+    "price": 161.38
+  },
+  {
+    "code": "688521",
+    "name": "芯原股份",
+    "industry": "芯片设计服务",
+    "market_cap": 320.8,
+    "listing_date": "2020-08-18",
+    "price": 64.2
+  }
+]
