@@ -1425,30 +1425,47 @@
             
             const months = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
             
+            // 确保笔记数组存在
+            const safeNotes = notes || [];
+            
             months.forEach((monthName, index) => {
                 // 统计该月的笔记数
-                const monthNotes = notes.filter(note => {
+                const monthNotes = safeNotes.filter(note => {
+                    if (!note || !note.createdAt) return false;
                     const noteDate = new Date(note.createdAt);
                     return noteDate.getFullYear() === year && noteDate.getMonth() === index;
                 });
                 
                 const monthBlock = document.createElement('div');
                 monthBlock.className = 'month-block' + (monthNotes.length > 0 ? ' has-notes' : '');
+                monthBlock.style.cssText = 'background: rgba(249, 115, 22, 0.05); border-radius: 12px; padding: 20px; border: 2px solid transparent; cursor: pointer; transition: all 0.3s;';
                 monthBlock.onclick = () => {
                     currentDate.setMonth(index);
                     switchDimension('month');
                 };
                 
                 monthBlock.innerHTML = `
-                    <div class="month-name">${monthName}</div>
-                    <div class="month-stats">
-                        <span class="note-count">${monthNotes.length}</span>
-                        <span class="note-label">篇笔记</span>
+                    <div class="month-name" style="font-weight: 700; font-size: 16px; color: var(--text-color); margin-bottom: 10px;">${monthName}</div>
+                    <div class="month-stats" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="note-count" style="font-size: 24px; font-weight: 800; color: var(--primary-color);">${monthNotes.length}</span>
+                        <span class="note-label" style="font-size: 12px; color: var(--text-muted);">篇笔记</span>
                     </div>
                 `;
                 
                 yearGrid.appendChild(monthBlock);
             });
+            
+            // 如果没有笔记，显示提示
+            if (safeNotes.length === 0) {
+                const emptyTip = document.createElement('div');
+                emptyTip.style.cssText = 'grid-column: 1 / -1; text-align: center; padding: 40px; background: rgba(249, 115, 22, 0.05); border-radius: 12px; border: 2px dashed var(--border-color);';
+                emptyTip.innerHTML = `
+                    <div style="font-size: 48px; margin-bottom: 15px;">📚</div>
+                    <h4 style="color: var(--primary-dark); margin-bottom: 10px;">开始你的学习之旅</h4>
+                    <p style="color: var(--text-muted); font-size: 14px;">切换到"笔记编辑"标签创建第一篇笔记，学习图谱将自动记录你的学习轨迹</p>
+                `;
+                yearGrid.appendChild(emptyTip);
+            }
         }
         
         function renderMonthView() {
