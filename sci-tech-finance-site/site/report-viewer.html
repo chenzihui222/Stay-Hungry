@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>报告查看 - Stay Hungry</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <header style="position: relative;">
+        <div class="container">
+            <h1>Stay Hungry</h1>
+            <p class="tagline">聚焦中国科技创新金融的独立学习研究平台</p>
+            <nav>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="star-market.html">科创板</a></li>
+                    <li><a href="vcpe.html">VC/PE</a></li>
+                    <li><a href="policy.html">政策解读</a></li>
+                    <li><a href="research.html">研究笔记</a></li>
+                    <li><a href="features.html">功能介绍</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="report-viewer" id="reportContent">
+            <div style="text-align: center; padding: 60px; color: var(--text-muted);">
+                <p>正在加载报告...</p>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin: 40px 0;">
+            <a href="#" onclick="window.close(); return false;" class="btn" style="padding: 12px 30px;">
+                🔙 返回上一页
+            </a>
+            <button onclick="window.print();" class="btn" style="padding: 12px 30px; margin-left: 15px; background: linear-gradient(135deg, #10b981, #059669);">
+                🖨️ 打印报告
+            </button>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Stay Hungry | 数据仅供研究参考</p>
+            <p>Stay hungry, stay foolish. 保持饥饿，保持愚蠢。</p>
+        </div>
+    </footer>
+
+    <script>
+        // 从URL参数获取报告文件名
+        const urlParams = new URLSearchParams(window.location.search);
+        const reportFile = urlParams.get('file');
+        const reportType = urlParams.get('type');
+        
+        if (reportFile) {
+            fetch('reports/' + reportFile)
+                .then(response => response.text())
+                .then(markdown => {
+                    // 使用marked解析Markdown
+                    document.getElementById('reportContent').innerHTML = marked.parse(markdown);
+                    
+                    // 添加打印标题
+                    const title = document.querySelector('h1');
+                    if (title) {
+                        document.title = title.textContent + ' - Stay Hungry';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('reportContent').innerHTML = `
+                        <div style="text-align: center; padding: 60px; color: #dc2626;">
+                            <h2>❌ 报告加载失败</h2>
+                            <p>无法加载报告文件，请返回重试。</p>
+                        </div>
+                    `;
+                });
+        } else {
+            document.getElementById('reportContent').innerHTML = `
+                <div style="text-align: center; padding: 60px; color: var(--text-muted);">
+                    <h2>📄 未指定报告文件</h2>
+                    <p>请在列表中选择要查看的报告。</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

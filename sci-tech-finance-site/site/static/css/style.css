@@ -608,3 +608,317 @@ footer a {
 .card, .metric-card, .feature-card {
     animation: fadeInUp 0.6s ease-out;
 }
+
+/* ==================== 政策解读页面美化样式 ==================== */
+
+.policy-container {
+    background: var(--card-bg);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(249, 115, 22, 0.1);
+    padding: 40px;
+    margin: 30px 0;
+    border: 2px solid var(--border-color);
+}
+
+.policy-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 30px;
+    border-bottom: 3px solid var(--border-color);
+}
+
+.policy-header h2 {
+    font-size: 32px;
+    color: var(--primary-dark);
+    margin-bottom: 10px;
+    font-weight: 800;
+}
+
+.policy-meta {
+    color: var(--text-muted);
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.policy-section {
+    margin-bottom: 35px;
+}
+
+.policy-section-title {
+    font-size: 22px;
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-left: 15px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.policy-item {
+    background: rgba(249, 115, 22, 0.03);
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 20px;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.policy-item:hover {
+    border-color: var(--primary-light);
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.1);
+}
+
+.policy-item-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 12px;
+}
+
+.policy-item-meta {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.policy-item-meta span {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.policy-item-meta .source {
+    background: var(--primary-color);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-weight: 600;
+}
+
+.policy-item-meta .date {
+    background: rgba(249, 115, 22, 0.1);
+    color: var(--primary-dark);
+    padding: 4px 12px;
+    border-radius: 15px;
+}
+
+.policy-item-summary {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--text-light);
+    margin-bottom: 15px;
+}
+
+.policy-item-points {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.policy-item-points span {
+    background: white;
+    border: 2px solid var(--border-color);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.policy-stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+.policy-stats-table th {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+    padding: 16px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.policy-stats-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+.policy-stats-table tr:hover td {
+    background: rgba(249, 115, 22, 0.05);
+}
+
+/* ==================== 报告页面美化样式 ==================== */
+
+.report-viewer {
+    background: var(--card-bg);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(249, 115, 22, 0.1);
+    padding: 50px;
+    margin: 30px 0;
+    border: 2px solid var(--border-color);
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.report-viewer h1 {
+    font-size: 36px;
+    color: var(--primary-dark);
+    margin-bottom: 25px;
+    text-align: center;
+    font-weight: 800;
+    border-bottom: 3px solid var(--primary-color);
+    padding-bottom: 20px;
+}
+
+.report-viewer h2 {
+    font-size: 26px;
+    color: var(--primary-color);
+    margin: 35px 0 20px 0;
+    font-weight: 700;
+    padding-left: 15px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.report-viewer h3 {
+    font-size: 22px;
+    color: var(--text-color);
+    margin: 28px 0 15px 0;
+    font-weight: 600;
+}
+
+.report-viewer p {
+    font-size: 17px;
+    line-height: 1.9;
+    color: var(--text-light);
+    margin-bottom: 16px;
+}
+
+.report-viewer ul {
+    margin: 15px 0;
+    padding-left: 25px;
+}
+
+.report-viewer li {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+
+.report-viewer strong {
+    color: var(--primary-dark);
+    font-weight: 700;
+}
+
+.report-viewer table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.report-viewer table th {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+    padding: 14px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.report-viewer table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+.report-viewer table tr:nth-child(even) {
+    background: rgba(249, 115, 22, 0.03);
+}
+
+.report-viewer table tr:hover {
+    background: rgba(249, 115, 22, 0.08);
+}
+
+.report-meta {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 15px;
+    margin-bottom: 30px;
+    padding: 15px;
+    background: rgba(249, 115, 22, 0.05);
+    border-radius: 8px;
+}
+
+.report-footer {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 2px solid var(--border-color);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 14px;
+    font-style: italic;
+}
+
+/* ==================== 数据来源链接样式 ==================== */
+
+.data-source-section {
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.05), rgba(251, 146, 60, 0.08));
+    border-radius: 12px;
+    padding: 25px 30px;
+    margin: 40px 0;
+    border: 2px solid var(--border-color);
+    text-align: center;
+}
+
+.data-source-title {
+    font-size: 16px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.data-source-links {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.data-source-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: white;
+    border: 2px solid var(--primary-color);
+    border-radius: 25px;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.data-source-link:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+
+/* 打印样式 */
+@media print {
+    .report-viewer {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    header, footer {
+        display: none;
+    }
+}
