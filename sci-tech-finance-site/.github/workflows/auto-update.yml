@@ -1,0 +1,106 @@
+name: 自动更新科创金融研究网站
+
+on:
+  # 定时触发 - 每天北京时间早上8点执行 (UTC 00:00)
+  schedule:
+    - cron: '0 0 * * *'
+  
+  # 手动触发
+  workflow_dispatch:
+  
+  # 代码推送时触发
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # 检出代码
+    - name: 检出代码
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    # 设置 Python 环境
+    - name: 设置 Python 3.10
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+    
+    # 缓存 pip 依赖
+    - name: 缓存 pip 依赖
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    # 安装依赖
+    - name: 安装 Python 依赖
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    # 运行数据抓取
+    - name: 抓取科创板数据
+      run: |
+        echo "开始抓取科创板数据..."
+        python src/scrapers/star_market.py
+      continue-on-error: true
+    
+    - name: 抓取 VC/PE 数据
+      run: |
+        echo "开始抓取 VC/PE 数据..."
+        python src/scrapers/vc_pe_tracker.py
+      continue-on-error: true
+    
+    - name: 抓取政策数据
+      run: |
+        echo "开始抓取政策数据..."
+        python src/scrapers/policy_monitor.py
+      continue-on-error: true
+    
+    # 运行数据分析
+    - name: 分析市场数据
+      run: |
+        echo "开始分析市场数据..."
+        python src/analyzers/market_analyzer.py
+      continue-on-error: true
+    
+    - name: 分析 VC/PE 数据
+      run: |
+        echo "开始分析 VC/PE 数据..."
+        python src/analyzers/vcpe_analyzer.py
+      continue-on-error: true
+    
+    # 生成网站
+    - name: 生成静态网站
+      run: |
+        echo "开始生成静态网站..."
+        python src/generators/site_generator.py
+    
+    # 提交数据更新
+    - name: 提交数据更新
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add data/
+        git add site/
+        git diff --staged --quiet || git commit -m "自动更新: 数据抓取与网站生成 - $(date +'%Y-%m-%d')"
+        git push
+      continue-on-error: true
+    
+    # 部署到 GitHub Pages
+    - name: 部署到 GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./site
+        cname: ''  # 如果有自定义域名，在此填写
+        commit_message: "自动部署: 更新网站 - $(date +'%Y-%m-%d %H:%M:%S')"

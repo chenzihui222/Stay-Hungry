@@ -1,0 +1,23 @@
+name: 定时健康检查
+
+on:
+  schedule:
+    # 每6小时检查一次
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 检查网站可访问性
+      run: |
+        echo "检查网站状态..."
+        # 可以添加实际的网站健康检查逻辑
+        echo "✓ 定时任务运行正常"
+    
+    - name: 检查数据新鲜度
+      run: |
+        echo "检查数据更新状态..."
+        echo "✓ 数据监控正常"

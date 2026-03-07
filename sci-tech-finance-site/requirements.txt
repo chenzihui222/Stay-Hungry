@@ -1,0 +1,33 @@
+# 科创金融研究网站 - 依赖清单
+
+# 数据抓取
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+akshare>=1.11.0
+selenium>=4.15.0
+aiohttp>=3.9.0
+
+# 数据处理与分析
+pandas>=2.1.0
+numpy>=1.24.0
+scipy>=1.11.0
+
+# 可视化
+matplotlib>=3.8.0
+plotly>=5.18.0
+pyecharts>=2.0.0
+
+# 报告生成
+jinja2>=3.1.0
+markdown>=3.5.0
+python-markdown-math>=0.8
+
+# 工具
+python-dotenv>=1.0.0
+pyyaml>=6.0.1
+schedule>=1.2.0
+
+# 开发工具
+pytest>=7.4.0
+black>=23.0.0
+flake8>=6.0.0

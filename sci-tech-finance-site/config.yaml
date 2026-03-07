@@ -1,0 +1,70 @@
+# 全局配置文件
+
+# 网站基本信息
+SITE_NAME: "科创金融研究"
+SITE_DESCRIPTION: "聚焦中国科技创新金融的独立研究平台"
+SITE_AUTHOR: "AI Research Team"
+SITE_URL: "https://yourusername.github.io/sci-tech-finance-site"
+
+# 数据抓取配置
+SCRAPING:
+  # 科创板数据源
+  star_market:
+    enabled: true
+    source: "akshare"
+    update_frequency: "daily"
+  
+  # VC/PE数据源
+  vcpe:
+    enabled: true
+    sources:
+      - "chinaventure"
+      - "pedaily"
+    update_frequency: "daily"
+  
+  # 政策数据源
+  policy:
+    enabled: true
+    sources:
+      - "gov_cn"
+      - "cbrc"
+      - "csrc"
+    update_frequency: "daily"
+
+# 分析配置
+ANALYSIS:
+  # 市场分析
+  market:
+    metrics:
+      - "market_cap"
+      - "pe_ratio"
+      - "trading_volume"
+      - "ipo_count"
+  
+  # VC/PE分析
+  vcpe:
+    metrics:
+      - "deal_count"
+      - "total_amount"
+      - "hot_sectors"
+      - "top_investors"
+
+# 生成配置
+GENERATION:
+  # 图表配置
+  charts:
+    width: 1000
+    height: 600
+    theme: "white"
+  
+  # 报告配置
+  reports:
+    format: "html"
+    include_charts: true
+    include_tables: true
+
+# 部署配置
+DEPLOYMENT:
+  platform: "github_pages"
+  branch: "gh-pages"
+  cname: null  # 如果有自定义域名，填写在此处
