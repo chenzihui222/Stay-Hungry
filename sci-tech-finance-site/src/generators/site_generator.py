@@ -10,10 +10,10 @@
 import os
 import json
 import logging
+import shutil
 from datetime import datetime
 from pathlib import Path
 import pandas as pd
-from jinja2 import Environment, FileSystemLoader
 
 # 配置日志
 logging.basicConfig(
@@ -25,11 +25,13 @@ logger = logging.getLogger(__name__)
 # 项目根目录
 BASE_DIR = Path(__file__).parent.parent.parent
 SITE_DIR = BASE_DIR / 'site'
-TEMPLATES_DIR = SITE_DIR / 'templates'
-CONTENT_DIR = SITE_DIR / 'content'
-STATIC_DIR = SITE_DIR / 'static'
 REPORTS_DIR = BASE_DIR / 'data' / 'reports'
 PROCESSED_DIR = BASE_DIR / 'data' / 'processed'
+
+# 网站配置
+SITE_TITLE = "Stay Hungry"
+SITE_TAGLINE = "聚焦中国科技创新金融的独立学习研究平台"
+SITE_AUTHOR = "Stay Hungry Team"
 
 
 class SiteGenerator:
@@ -37,14 +39,6 @@ class SiteGenerator:
     
     def __init__(self):
         self.today = datetime.now().strftime('%Y-%m-%d')
-        
-        # 初始化Jinja2环境
-        if TEMPLATES_DIR.exists():
-            self.env = Environment(loader=FileSystemLoader(TEMPLATES_DIR))
-        else:
-            self.env = None
-            logger.warning("模板目录不存在，将使用默认模板")
-        
         logger.info(f"初始化网站生成器 - {self.today}")
     
     def load_report_data(self):
@@ -81,36 +75,58 @@ class SiteGenerator:
         
         return data
     
+    def get_header(self, active_page='index'):
+        """生成统一的页头"""
+        nav_items = [
+            ('index', '首页', 'index.html'),
+            ('star-market', '科创板', 'star-market.html'),
+            ('vcpe', 'VC/PE', 'vcpe.html'),
+            ('policy', '政策解读', 'policy.html'),
+            ('research', '研究笔记', 'research.html'),
+            ('features', '功能介绍', 'features.html'),
+        ]
+        
+        nav_html = ''
+        for page_id, page_name, page_url in nav_items:
+            active_class = 'active' if page_id == active_page else ''
+            nav_html += f'                    <li><a href="{page_url}" class="{active_class}">{page_name}</a></li>\n'
+        
+        return f"""    <header>
+        <div class="container">
+            <h1>{SITE_TITLE}</h1>
+            <p class="tagline">{SITE_TAGLINE}</p>
+            <nav>
+                <ul>
+{nav_html}                </ul>
+            </nav>
+        </div>
+    </header>"""
+    
+    def get_footer(self):
+        """生成统一的页脚"""
+        return f"""    <footer>
+        <div class="container">
+            <p>&copy; {datetime.now().year} {SITE_TITLE} | 数据仅供研究参考</p>
+            <p>Stay hungry, stay foolish. 保持饥饿，保持愚蠢。</p>
+            <p>自动更新于 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+        </div>
+    </footer>"""
+    
     def generate_index_page(self, data):
         """生成首页"""
         try:
             logger.info("生成首页...")
             
-            # 首页HTML内容
             html_content = f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>科创金融研究 - 中国科技创新金融研究平台</title>
+    <title>{SITE_TITLE} - 中国科技创新金融研究平台</title>
     <link rel="stylesheet" href="static/css/style.css">
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1>科创金融研究</h1>
-            <p class="tagline">聚焦中国科技创新金融的独立研究平台</p>
-            <nav>
-                <ul>
-                    <li><a href="index.html" class="active">首页</a></li>
-                    <li><a href="star-market.html">科创板</a></li>
-                    <li><a href="vcpe.html">VC/PE</a></li>
-                    <li><a href="policy.html">政策解读</a></li>
-                    <li><a href="research.html">研究笔记</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+{self.get_header('index')}
 
     <main class="container">
         <section class="hero">
@@ -177,16 +193,10 @@ class SiteGenerator:
         </section>
     </main>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 科创金融研究平台 | 数据仅供研究参考</p>
-            <p>自动更新于 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
-        </div>
-    </footer>
+{self.get_footer()}
 </body>
 </html>"""
             
-            # 保存首页
             output_file = SITE_DIR / 'index.html'
             with open(output_file, 'w', encoding='utf-8') as f:
                 f.write(html_content)
@@ -208,25 +218,12 @@ class SiteGenerator:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>科创板分析 - 科创金融研究</title>
+    <title>科创板分析 - {SITE_TITLE}</title>
     <link rel="stylesheet" href="static/css/style.css">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1>科创金融研究</h1>
-            <nav>
-                <ul>
-                    <li><a href="index.html">首页</a></li>
-                    <li><a href="star-market.html" class="active">科创板</a></li>
-                    <li><a href="vcpe.html">VC/PE</a></li>
-                    <li><a href="policy.html">政策解读</a></li>
-                    <li><a href="research.html">研究笔记</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+{self.get_header('star-market')}
 
     <main class="container">
         <h2>科创板市场分析</h2>
@@ -275,11 +272,7 @@ class SiteGenerator:
         </section>
     </main>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 科创金融研究平台</p>
-        </div>
-    </footer>
+{self.get_footer()}
 
     <script src="static/js/charts.js"></script>
 </body>
@@ -306,24 +299,11 @@ class SiteGenerator:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VC/PE投资 - 科创金融研究</title>
+    <title>VC/PE投资 - {SITE_TITLE}</title>
     <link rel="stylesheet" href="static/css/style.css">
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1>科创金融研究</h1>
-            <nav>
-                <ul>
-                    <li><a href="index.html">首页</a></li>
-                    <li><a href="star-market.html">科创板</a></li>
-                    <li><a href="vcpe.html" class="active">VC/PE</a></li>
-                    <li><a href="policy.html">政策解读</a></li>
-                    <li><a href="research.html">研究笔记</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+{self.get_header('vcpe')}
 
     <main class="container">
         <h2>VC/PE投资市场分析</h2>
@@ -379,11 +359,7 @@ class SiteGenerator:
         </section>
     </main>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 科创金融研究平台</p>
-        </div>
-    </footer>
+{self.get_footer()}
 </body>
 </html>"""
             
@@ -408,24 +384,11 @@ class SiteGenerator:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>政策解读 - 科创金融研究</title>
+    <title>政策解读 - {SITE_TITLE}</title>
     <link rel="stylesheet" href="static/css/style.css">
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1>科创金融研究</h1>
-            <nav>
-                <ul>
-                    <li><a href="index.html">首页</a></li>
-                    <li><a href="star-market.html">科创板</a></li>
-                    <li><a href="vcpe.html">VC/PE</a></li>
-                    <li><a href="policy.html" class="active">政策解读</a></li>
-                    <li><a href="research.html">研究笔记</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+{self.get_header('policy')}
 
     <main class="container">
         <h2>科技金融政策解读</h2>
@@ -445,11 +408,7 @@ class SiteGenerator:
         </section>
     </main>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 科创金融研究平台</p>
-        </div>
-    </footer>
+{self.get_footer()}
 </body>
 </html>"""
             
@@ -473,7 +432,6 @@ class SiteGenerator:
             
             # 复制报告文件
             for report_file in REPORTS_DIR.glob('*.md'):
-                import shutil
                 shutil.copy2(report_file, site_reports_dir / report_file.name)
                 logger.info(f"复制报告: {report_file.name}")
             
