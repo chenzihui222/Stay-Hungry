@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>研究笔记 - Stay Hungry</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <style>
+        /* 用户登录区域 */
+        .user-section {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .github-login-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #24292e, #586069);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .github-login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+        }
+        
+        .github-login-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .user-info {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 25px;
+            box-shadow: 0 2px 8px rgba(249, 115, 22, 0.15);
+            border: 2px solid var(--border-color);
+        }
+        
+        .user-info.show {
+            display: flex;
+        }
+        
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .logout-btn {
+            padding: 6px 12px;
+            background: #fee2e2;
+            color: #dc2626;
+            border: none;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: #fecaca;
+        }
+        
+        /* 笔记编辑器样式 */
+        .notes-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .notes-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* 笔记列表侧边栏 */
+        .notes-sidebar {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.1);
+            border: 2px solid var(--border-color);
+            height: fit-content;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-header h3 {
+            color: var(--primary-dark);
+            font-size: 18px;
+        }
+        
+        .new-note-btn {
+            padding: 8px 16px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .new-note-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+        
+        .new-note-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .notes-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .note-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(249, 115, 22, 0.05);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .note-item:hover {
+            background: rgba(249, 115, 22, 0.1);
+            border-color: var(--primary-light);
+        }
+        
+        .note-item.active {
+            background: rgba(249, 115, 22, 0.15);
+            border-color: var(--primary-color);
+        }
+        
+        .note-item-title {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .note-item-date {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .delete-note-btn {
+            float: right;
+            background: #fee2e2;
+            color: #dc2626;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        /* 编辑器主体 */
+        .editor-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.1);
+            border: 2px solid var(--border-color);
+        }
+        
+        .editor-header {
+            margin-bottom: 25px;
+        }
+        
+        .editor-title-input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 20px;
+            font-weight: 700;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-color);
+            background: white;
+            transition: all 0.3s;
+        }
+        
+        .editor-title-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
+        }
+        
+        .editor-toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(249, 115, 22, 0.05);
+            border-radius: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .toolbar-btn {
+            padding: 8px 16px;
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+            color: var(--text-color);
+        }
+        
+        .toolbar-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .toolbar-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .editor-textarea {
+            width: 100%;
+            min-height: 400px;
+            padding: 20px;
+            font-size: 16px;
+            line-height: 1.8;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            resize: vertical;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
+            transition: all 0.3s;
+        }
+        
+        .editor-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
+        }
+        
+        .editor-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .save-btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(249, 115, 22, 0.3);
+        }
+        
+        .save-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .last-saved {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        
+        /* 登录提示 */
+        .login-prompt {
+            text-align: center;
+            padding: 60px 40px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.1);
+            border: 2px solid var(--border-color);
+        }
+        
+        .login-prompt-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        
+        .login-prompt h3 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .login-prompt p {
+            color: var(--text-light);
+            margin-bottom: 30px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+    <header style="position: relative;">
+        <div class="container">
+            <h1>Stay Hungry</h1>
+            <p class="tagline">聚焦中国科技创新金融的独立学习研究平台</p>
+            <nav>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="star-market.html">科创板</a></li>
+                    <li><a href="vcpe.html">VC/PE</a></li>
+                    <li><a href="policy.html">政策解读</a></li>
+                    <li><a href="research.html" class="active">研究笔记</a></li>
+                    <li><a href="features.html">功能介绍</a></li>
+                </ul>
+            </nav>
+        </div>
+        
+        <!-- 用户登录区域 -->
+        <div class="user-section">
+            <button class="github-login-btn" id="loginBtn" onclick="loginWithGitHub()">
+                <svg viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+                使用 GitHub 登录
+            </button>
+            
+            <div class="user-info" id="userInfo">
+                <img src="" alt="头像" class="user-avatar" id="userAvatar">
+                <span class="user-name" id="userName"></span>
+                <button class="logout-btn" onclick="logout()">退出</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <h2>研究笔记</h2>
+        <p class="update-time">记录你的投资思考和市场观察</p>
+        
+        <!-- 未登录提示 -->
+        <div class="login-prompt" id="loginPrompt">
+            <div class="login-prompt-icon">📝</div>
+            <h3>开始记录你的研究笔记</h3>
+            <p>登录后可以创建、编辑和保存你的投资思考。所有笔记将安全存储，随时可查。</p>
+            <button class="github-login-btn" onclick="loginWithGitHub()">
+                <svg viewBox="0 0 16 16" fill="currentColor" style="width: 20px; height: 20px;">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+                使用 GitHub 登录
+            </button>
+        </div>
+        
+        <!-- 笔记编辑器（登录后显示） -->
+        <div class="notes-container" id="notesContainer" style="display: none;">
+            <!-- 侧边栏：笔记列表 -->
+            <aside class="notes-sidebar">
+                <div class="sidebar-header">
+                    <h3>📚 我的笔记</h3>
+                    <button class="new-note-btn" id="newNoteBtn" onclick="createNewNote()">+ 新建</button>
+                </div>
+                <div class="notes-list" id="notesList">
+                    <!-- 笔记列表将动态生成 -->
+                </div>
+            </aside>
+            
+            <!-- 编辑器主体 -->
+            <div class="editor-container">
+                <div class="editor-header">
+                    <input type="text" class="editor-title-input" id="noteTitle" placeholder="输入笔记标题...">
+                </div>
+                
+                <div class="editor-toolbar">
+                    <button class="toolbar-btn" onclick="formatText('bold')" title="粗体"><b>B</b></button>
+                    <button class="toolbar-btn" onclick="formatText('italic')" title="斜体"><i>I</i></button>
+                    <button class="toolbar-btn" onclick="formatText('heading')" title="标题">H</button>
+                    <button class="toolbar-btn" onclick="formatText('list')" title="列表">☰</button>
+                    <button class="toolbar-btn" onclick="formatText('link')" title="链接">🔗</button>
+                    <button class="toolbar-btn" onclick="formatText('quote')" title="引用">"</button>
+                    <button class="toolbar-btn" onclick="formatText('code')" title="代码">{ }</button>
+                </div>
+                
+                <textarea class="editor-textarea" id="noteContent" placeholder="在这里记录你的研究思考...
+
+💡 提示：
+- 支持 Markdown 格式
+- 可以使用工具栏快速格式化
+- 自动保存到本地"></textarea>
+                
+                <div class="editor-actions">
+                    <span class="last-saved" id="lastSaved">尚未保存</span>
+                    <button class="save-btn" id="saveBtn" onclick="saveNote()">💾 保存笔记</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));">
+        <div class="container">
+            <p>&copy; 2026 Stay Hungry | 数据仅供研究参考</p>
+            <p>Stay hungry, stay foolish. 保持饥饿，保持愚蠢。</p>
+        </div>
+    </footer>
+
+    <script>
+        // 模拟用户数据（实际项目中使用 GitHub OAuth）
+        let currentUser = null;
+        let currentNoteId = null;
+        let notes = [];
+        
+        // 页面加载时检查登录状态
+        window.onload = function() {
+            checkLoginStatus();
+            loadNotes();
+        };
+        
+        // 检查登录状态
+        function checkLoginStatus() {
+            const userData = localStorage.getItem('stayHungryUser');
+            if (userData) {
+                currentUser = JSON.parse(userData);
+                showLoggedInUI();
+            } else {
+                showLoggedOutUI();
+            }
+        }
+        
+        // GitHub 登录（模拟）
+        function loginWithGitHub() {
+            // 注意：实际 GitHub OAuth 需要后端服务
+            // 这里使用模拟登录，存储到 localStorage
+            
+            const mockUser = {
+                id: 'github_' + Date.now(),
+                name: '研究用户',
+                avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + Date.now(),
+                loginTime: new Date().toISOString()
+            };
+            
+            currentUser = mockUser;
+            localStorage.setItem('stayHungryUser', JSON.stringify(mockUser));
+            
+            showLoggedInUI();
+            loadNotes();
+            
+            // 显示欢迎提示
+            alert('🎉 欢迎回来！您现在可以创建和编辑研究笔记了。\n\n💡 提示：所有笔记将保存在您的浏览器本地存储中。');
+        }
+        
+        // 退出登录
+        function logout() {
+            if (confirm('确定要退出登录吗？您的笔记数据仍会保留在本地。')) {
+                currentUser = null;
+                currentNoteId = null;
+                localStorage.removeItem('stayHungryUser');
+                showLoggedOutUI();
+            }
+        }
+        
+        // 显示已登录界面
+        function showLoggedInUI() {
+            document.getElementById('loginBtn').style.display = 'none';
+            document.getElementById('loginPrompt').style.display = 'none';
+            
+            const userInfo = document.getElementById('userInfo');
+            userInfo.classList.add('show');
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userAvatar').src = currentUser.avatar;
+            
+            document.getElementById('notesContainer').style.display = 'grid';
+        }
+        
+        // 显示未登录界面
+        function showLoggedOutUI() {
+            document.getElementById('loginBtn').style.display = 'flex';
+            document.getElementById('loginPrompt').style.display = 'block';
+            document.getElementById('userInfo').classList.remove('show');
+            document.getElementById('notesContainer').style.display = 'none';
+        }
+        
+        // 加载笔记列表
+        function loadNotes() {
+            if (!currentUser) return;
+            
+            const savedNotes = localStorage.getItem('stayHungryNotes_' + currentUser.id);
+            notes = savedNotes ? JSON.parse(savedNotes) : [];
+            
+            renderNotesList();
+            
+            // 如果有笔记，加载第一篇
+            if (notes.length > 0) {
+                loadNote(notes[0].id);
+            } else {
+                createNewNote();
+            }
+        }
+        
+        // 渲染笔记列表
+        function renderNotesList() {
+            const listContainer = document.getElementById('notesList');
+            
+            if (notes.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <p>还没有笔记</p>
+                        <p style="font-size: 12px; margin-top: 10px;">点击"新建"创建第一篇笔记</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            listContainer.innerHTML = notes.map(note => `
+                <div class="note-item ${note.id === currentNoteId ? 'active' : ''}" onclick="loadNote('${note.id}')">
+                    <div class="note-item-title">${escapeHtml(note.title || '无标题')}</div>
+                    <div class="note-item-date">${formatDate(note.updatedAt)}</div>
+                    <button class="delete-note-btn" onclick="event.stopPropagation(); deleteNote('${note.id}')">删除</button>
+                </div>
+            `).join('');
+        }
+        
+        // 创建新笔记
+        function createNewNote() {
+            currentNoteId = 'note_' + Date.now();
+            document.getElementById('noteTitle').value = '';
+            document.getElementById('noteContent').value = '';
+            document.getElementById('lastSaved').textContent = '尚未保存';
+            
+            // 更新列表选中状态
+            document.querySelectorAll('.note-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            document.getElementById('noteTitle').focus();
+        }
+        
+        // 加载笔记
+        function loadNote(noteId) {
+            const note = notes.find(n => n.id === noteId);
+            if (!note) return;
+            
+            currentNoteId = noteId;
+            document.getElementById('noteTitle').value = note.title;
+            document.getElementById('noteContent').value = note.content;
+            document.getElementById('lastSaved').textContent = '上次保存：' + formatDate(note.updatedAt);
+            
+            // 更新列表选中状态
+            renderNotesList();
+        }
+        
+        // 保存笔记
+        function saveNote() {
+            if (!currentUser) {
+                alert('请先登录！');
+                return;
+            }
+            
+            const title = document.getElementById('noteTitle').value.trim() || '无标题';
+            const content = document.getElementById('noteContent').value;
+            
+            const noteIndex = notes.findIndex(n => n.id === currentNoteId);
+            const now = new Date().toISOString();
+            
+            const noteData = {
+                id: currentNoteId,
+                title: title,
+                content: content,
+                createdAt: noteIndex >= 0 ? notes[noteIndex].createdAt : now,
+                updatedAt: now
+            };
+            
+            if (noteIndex >= 0) {
+                notes[noteIndex] = noteData;
+            } else {
+                notes.unshift(noteData);
+            }
+            
+            // 保存到 localStorage
+            localStorage.setItem('stayHungryNotes_' + currentUser.id, JSON.stringify(notes));
+            
+            document.getElementById('lastSaved').textContent = '已保存：' + formatDate(now);
+            renderNotesList();
+            
+            // 显示保存成功提示
+            const saveBtn = document.getElementById('saveBtn');
+            const originalText = saveBtn.textContent;
+            saveBtn.textContent = '✓ 保存成功';
+            saveBtn.style.background = '#10b981';
+            
+            setTimeout(() => {
+                saveBtn.textContent = originalText;
+                saveBtn.style.background = '';
+            }, 2000);
+        }
+        
+        // 删除笔记
+        function deleteNote(noteId) {
+            if (!confirm('确定要删除这篇笔记吗？此操作无法撤销。')) {
+                return;
+            }
+            
+            notes = notes.filter(n => n.id !== noteId);
+            localStorage.setItem('stayHungryNotes_' + currentUser.id, JSON.stringify(notes));
+            
+            if (currentNoteId === noteId) {
+                if (notes.length > 0) {
+                    loadNote(notes[0].id);
+                } else {
+                    createNewNote();
+                }
+            }
+            
+            renderNotesList();
+        }
+        
+        // 格式化文本
+        function formatText(type) {
+            const textarea = document.getElementById('noteContent');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(start, end);
+            let replacement = '';
+            
+            switch(type) {
+                case 'bold':
+                    replacement = `**${selectedText || '粗体文本'}**`;
+                    break;
+                case 'italic':
+                    replacement = `*${selectedText || '斜体文本'}*`;
+                    break;
+                case 'heading':
+                    replacement = `\n### ${selectedText || '标题'}\n`;
+                    break;
+                case 'list':
+                    replacement = `\n- ${selectedText || '列表项'}\n- 列表项\n- 列表项\n`;
+                    break;
+                case 'link':
+                    replacement = `[${selectedText || '链接文本'}](https://)`;
+                    break;
+                case 'quote':
+                    replacement = `\n> ${selectedText || '引用文本'}\n`;
+                    break;
+                case 'code':
+                    replacement = `\`\`\`\n${selectedText || '代码'}\n\`\`\``;
+                    break;
+            }
+            
+            textarea.value = textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
+            textarea.focus();
+            textarea.setSelectionRange(start + replacement.length, start + replacement.length);
+        }
+        
+        // 自动保存（每30秒）
+        setInterval(() => {
+            if (currentUser && currentNoteId && document.getElementById('noteTitle').value) {
+                saveNote();
+            }
+        }, 30000);
+        
+        // 辅助函数
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diff = now - date;
+            
+            if (diff < 60000) return '刚刚';
+            if (diff < 3600000) return Math.floor(diff / 60000) + '分钟前';
+            if (diff < 86400000) return Math.floor(diff / 3600000) + '小时前';
+            
+            return date.toLocaleDateString('zh-CN') + ' ' + date.toLocaleTimeString('zh-CN', {hour: '2-digit', minute:'2-digit'});
+        }
+    </script>
+</body>
+</html>
