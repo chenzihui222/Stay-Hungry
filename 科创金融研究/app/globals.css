@@ -119,6 +119,25 @@ a {
   font-variant-numeric: tabular-nums;
 }
 
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom selection */
+::selection {
+  background: rgba(59, 130, 246, 0.3);
+  color: white;
+}
+
+/* Glass morphism utility */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 /* Carousel smooth scroll */
 .carousel-slide {
   transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
