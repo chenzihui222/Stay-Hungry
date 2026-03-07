@@ -1,0 +1,46 @@
+{
+  "hot_sectors": [
+    "人工智能",
+    "生物医药",
+    "新能源",
+    "半导体",
+    "企业服务"
+  ],
+  "sector_details": [
+    {
+      "sectors": "人工智能",
+      "deal_count": 156,
+      "total_amount": 45.2,
+      "avg_deal_size": 28.9,
+      "heat_index": 89.52000000000001
+    },
+    {
+      "sectors": "生物医药",
+      "deal_count": 134,
+      "total_amount": 38.6,
+      "avg_deal_size": 28.8,
+      "heat_index": 76.76
+    },
+    {
+      "sectors": "新能源",
+      "deal_count": 98,
+      "total_amount": 32.1,
+      "avg_deal_size": 32.8,
+      "heat_index": 58.46000000000001
+    },
+    {
+      "sectors": "半导体",
+      "deal_count": 87,
+      "total_amount": 28.4,
+      "avg_deal_size": 32.6,
+      "heat_index": 51.84
+    },
+    {
+      "sectors": "企业服务",
+      "deal_count": 76,
+      "total_amount": 22.3,
+      "avg_deal_size": 29.3,
+      "heat_index": 43.78
+    }
+  ]
+}

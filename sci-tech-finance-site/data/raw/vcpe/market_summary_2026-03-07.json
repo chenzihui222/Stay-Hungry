@@ -1,0 +1,18 @@
+{
+  "date": "2026-03-07",
+  "period": "本月",
+  "total_deals": 650,
+  "total_amount_usd": 18.5,
+  "yoy_growth": 12.5,
+  "mom_growth": 3.2,
+  "hot_sectors": [
+    "人工智能",
+    "生物医药",
+    "新能源"
+  ],
+  "top_deal": {
+    "company": "某AI芯片公司",
+    "amount": "5亿美元",
+    "investors": "多家知名机构联合投资"
+  }
+}

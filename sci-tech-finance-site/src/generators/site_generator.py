@@ -243,7 +243,7 @@ class SiteGenerator:
             
             <div class="metric-card">
                 <h4>平均市盈率</h4>
-                <div class="big-number">{market_data.get('valuation', {}).get('avg_pe', 'N/A'):.2f if market_data.get('valuation', {}).get('avg_pe') else 'N/A'}</div>
+                <div class="big-number">{market_data.get('valuation', {}).get('avg_pe', 'N/A') if market_data.get('valuation', {}).get('avg_pe') else 'N/A'}</div>
                 <div class="label">倍</div>
             </div>
             

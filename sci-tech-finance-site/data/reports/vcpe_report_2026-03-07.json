@@ -1,0 +1,151 @@
+{
+  "date": "2026-03-07",
+  "market_summary": {
+    "date": "2026-03-07",
+    "period": "本月",
+    "total_deals": 650,
+    "total_amount_usd": 18.5,
+    "yoy_growth": 12.5,
+    "mom_growth": 3.2,
+    "hot_sectors": [
+      "人工智能",
+      "生物医药",
+      "新能源"
+    ],
+    "top_deal": {
+      "company": "某AI芯片公司",
+      "amount": "5亿美元",
+      "investors": "多家知名机构联合投资"
+    }
+  },
+  "trends": {
+    "total_deals": 21,
+    "stage_distribution": {
+      "种子轮": 4,
+      "天使轮": 4,
+      "A轮": 4,
+      "B轮": 3,
+      "C轮": 3,
+      "D轮": 3
+    },
+    "top_stages": {
+      "种子轮": 4,
+      "天使轮": 4,
+      "A轮": 4,
+      "B轮": 3,
+      "C轮": 3
+    }
+  },
+  "sectors": {
+    "hot_sectors": [
+      "人工智能",
+      "生物医药",
+      "新能源",
+      "半导体",
+      "企业服务"
+    ],
+    "sector_details": [
+      {
+        "sectors": "人工智能",
+        "deal_count": 156,
+        "total_amount": 45.2,
+        "avg_deal_size": 28.9,
+        "heat_index": 89.52000000000001
+      },
+      {
+        "sectors": "生物医药",
+        "deal_count": 134,
+        "total_amount": 38.6,
+        "avg_deal_size": 28.8,
+        "heat_index": 76.76
+      },
+      {
+        "sectors": "新能源",
+        "deal_count": 98,
+        "total_amount": 32.1,
+        "avg_deal_size": 32.8,
+        "heat_index": 58.46000000000001
+      },
+      {
+        "sectors": "半导体",
+        "deal_count": 87,
+        "total_amount": 28.4,
+        "avg_deal_size": 32.6,
+        "heat_index": 51.84
+      },
+      {
+        "sectors": "企业服务",
+        "deal_count": 76,
+        "total_amount": 22.3,
+        "avg_deal_size": 29.3,
+        "heat_index": 43.78
+      }
+    ]
+  },
+  "investors": {
+    "top_investors": [
+      {
+        "rank": 1,
+        "investor_name": "红杉中国",
+        "deal_count": 45,
+        "total_amount": 12.5
+      },
+      {
+        "rank": 2,
+        "investor_name": "高瓴资本",
+        "deal_count": 42,
+        "total_amount": 11.8
+      },
+      {
+        "rank": 3,
+        "investor_name": "IDG资本",
+        "deal_count": 38,
+        "total_amount": 9.6
+      },
+      {
+        "rank": 4,
+        "investor_name": "腾讯投资",
+        "deal_count": 35,
+        "total_amount": 8.9
+      },
+      {
+        "rank": 5,
+        "investor_name": "阿里巴巴",
+        "deal_count": 33,
+        "total_amount": 8.2
+      },
+      {
+        "rank": 6,
+        "investor_name": "深创投",
+        "deal_count": 31,
+        "total_amount": 7.5
+      },
+      {
+        "rank": 7,
+        "investor_name": "经纬创投",
+        "deal_count": 29,
+        "total_amount": 6.8
+      },
+      {
+        "rank": 8,
+        "investor_name": "启明创投",
+        "deal_count": 27,
+        "total_amount": 6.2
+      },
+      {
+        "rank": 9,
+        "investor_name": "五源资本",
+        "deal_count": 25,
+        "total_amount": 5.9
+      },
+      {
+        "rank": 10,
+        "investor_name": "GGV纪源资本",
+        "deal_count": 24,
+        "total_amount": 5.5
+      }
+    ],
+    "total_deals_top20": 514,
+    "avg_deals_per_investor": 25.7
+  }
+}
