@@ -1,0 +1,41 @@
+name: 手动部署网站
+
+on:
+  # 手动触发
+  workflow_dispatch:
+  
+  # 代码推送时自动部署
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'site/**'
+      - '.github/workflows/deploy.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    
+    steps:
+    # 检出代码
+    - name: 检出代码
+      uses: actions/checkout@v4
+    
+    # 部署到 GitHub Pages
+    - name: 部署到 GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./site
+        cname: ''
+        commit_message: "🚀 部署网站: ${{ github.event.head_commit.message }} - $(date +'%Y-%m-%d %H:%M:%S')"
+    
+    - name: 部署完成通知
+      run: |
+        echo "✅ 网站已成功部署到 GitHub Pages"
+        echo "🔗 访问地址: https://chenzihui222.github.io/Stay-Hungry/"
