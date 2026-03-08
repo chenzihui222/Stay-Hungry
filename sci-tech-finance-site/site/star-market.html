@@ -24,9 +24,9 @@
                 </ul>
             </nav>
         </div>
-        <div class="user-section" style="position: absolute; top: 20px; right: 20px;">
-            <a href="research.html" class="github-login-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: linear-gradient(135deg, #24292e, #586069); color: white; border-radius: 8px; font-size: 14px; font-weight: 600;">
-                <svg viewBox="0 0 16 16" fill="currentColor" style="width: 20px; height: 20px;">
+        <div class="user-section" style="position: absolute; top: var(--spacing-md); right: var(--spacing-md);">
+            <a href="research.html" class="github-login-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: var(--spacing-xs); padding: 10px var(--spacing-md); background: linear-gradient(135deg, #24292e, #586069); color: white; border-radius: 8px; font-size: 14px; font-weight: 600;">
+                <svg viewBox="0 0 16 16" fill="currentColor" style="width: 20px; height: 20px; vertical-align: middle;">
                     <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
                 </svg>
                 登录
@@ -64,21 +64,21 @@
             </div>
         </section>
 
-        <section class="charts" style="background: var(--card-bg); padding: 30px; border-radius: 16px; margin: 30px 0;">
-            <h3 style="color: var(--primary-dark); margin-bottom: 20px;">📈 近12个月IPO趋势</h3>
+        <section class="charts" style="background: var(--card-bg); padding: var(--spacing-lg); border-radius: 16px; margin: var(--spacing-lg) 0;">
+            <h3 style="color: var(--primary-dark); margin-bottom: var(--spacing-md); font-size: 20px;">📈 近12个月IPO趋势</h3>
             <div id="ipo-chart" style="width:100%;height:400px;"></div>
         </section>
 
-        <section style="background: var(--card-bg); padding: 30px; border-radius: 16px; margin: 30px 0; box-shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.1);">
-            <h3 style="color: var(--primary-dark); margin-bottom: 25px;">🏆 市值Top 10公司</h3>
+        <section style="background: var(--card-bg); padding: var(--spacing-lg); border-radius: 16px; margin: var(--spacing-lg) 0; box-shadow: 0 4px 6px -1px rgba(30, 58, 95, 0.1);">
+            <h3 style="color: var(--primary-dark); margin-bottom: var(--spacing-lg); font-size: 20px;">🏆 市值Top 10公司</h3>
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th style="width: 60px;">排名</th>
+                        <th style="width: 60px; font-size: 16px;">排名</th>
                         <th>代码</th>
                         <th>名称</th>
                         <th>行业</th>
-                        <th style="text-align: right;">市值(亿元)</th>
+                        <th style="text-align: right; font-size: 16px;">市值(亿元)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -87,10 +87,10 @@
             </table>
         </section>
 
-        <section class="report-section" style="text-align: center; padding: 40px;">
-            <h3 style="margin-bottom: 20px;">查看完整市场分析报告</h3>
-            <p style="color: var(--text-muted); margin-bottom: 25px;">获取详细的行业分布、IPO分析和市场洞察</p>
-            <a href="report-viewer.html?file=star_market_report_2026-03-07.md" class="btn" target="_blank" style="padding: 15px 40px; font-size: 16px;">📊 查看详细报告</a>
+        <section class="report-section" style="text-align: center; padding: var(--spacing-xl);">
+            <h3 style="margin-bottom: var(--spacing-md); font-size: 20px;">查看完整市场分析报告</h3>
+            <p style="color: var(--text-muted); margin-bottom: var(--spacing-lg); font-size: 16px;">获取详细的行业分布、IPO分析和市场洞察</p>
+            <a href="report-viewer.html?file=star_market_report_2026-03-07.md" class="btn" target="_blank" style="padding: var(--spacing-sm) var(--spacing-xl); font-size: 16px;">📊 查看详细报告</a>
         </section>
     </main>
 
@@ -113,7 +113,7 @@
                 type: 'bar',
                 name: 'IPO数量',
                 marker: {
-                    color: '#f97316',
+                    color: '#1e3a5f',
                     opacity: 0.8
                 }
             };

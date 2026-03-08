@@ -10,118 +10,150 @@
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* 搜索栏样式 */
-        .search-section {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            padding: 30px 0;
-            margin-top: -20px;
-        }
-        
-        .search-container {
-            max-width: 700px;
-            margin: 0 auto;
+        /* ==================== Hero区域 ==================== */
+        .hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1e40af 100%);
+            min-height: 85vh;
+            display: flex;
+            align-items: center;
             position: relative;
+            overflow: hidden;
+            padding: var(--spacing-xl) 0;
         }
         
-        .search-box {
-            width: 100%;
-            padding: 15px 50px 15px 20px;
-            border: 2px solid #f97316;
-            border-radius: 50px;
-            font-size: 16px;
-            background: rgba(255,255,255,0.95);
-            transition: all 0.3s ease;
-        }
-        
-        .search-box:focus {
-            outline: none;
-            box-shadow: 0 0 20px rgba(249, 115, 22, 0.3);
-        }
-        
-        .search-btn {
+        /* 科技网格背景 */
+        .hero::before {
+            content: '';
             position: absolute;
-            right: 5px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: #f97316;
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+        }
+        
+        /* 光晕效果 */
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 20%;
+            right: 10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.3) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+        
+        .hero h2 {
             color: white;
-            cursor: pointer;
+            font-size: 52px;
+            font-weight: 800;
+            margin-bottom: var(--spacing-md);
+            line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .hero-subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 20px;
+            margin-bottom: var(--spacing-xl);
+            line-height: 1.6;
+            max-width: 600px;
+        }
+        
+        .hero-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+        
+        .hero-btn-primary {
+            padding: 16px 36px;
+            background: white;
+            color: var(--primary-color);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .hero-btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .hero-btn-secondary {
+            padding: 16px 36px;
+            background: transparent;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            border: 2px solid rgba(255,255,255,0.5);
             transition: all 0.3s ease;
         }
         
-        .search-btn:hover {
-            background: #ea580c;
-            transform: translateY(-50%) scale(1.1);
+        .hero-btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: white;
         }
         
-        /* 快速入口卡片 */
-        .quick-access {
-            padding: 40px 0;
-            background: #f8fafc;
+        .hero-stats {
+            display: flex;
+            gap: var(--spacing-xl);
+            margin-top: var(--spacing-xl);
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid rgba(255,255,255,0.2);
         }
         
-        .quick-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
-        }
-        
-        .quick-card {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
+        .hero-stat {
             text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
         }
         
-        .quick-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            border-color: #f97316;
+        .hero-stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: white;
+            display: block;
         }
         
-        .quick-card i {
-            font-size: 40px;
-            color: #f97316;
-            margin-bottom: 15px;
-        }
-        
-        .quick-card h3 {
-            color: #1f2937;
-            margin-bottom: 10px;
-        }
-        
-        .quick-card p {
-            color: #6b7280;
+        .hero-stat-label {
             font-size: 14px;
-            margin-bottom: 20px;
+            color: rgba(255,255,255,0.7);
         }
         
-        /* 报告卡片区域 */
-        .reports-section {
-            padding: 60px 0;
-            background: white;
+        /* ==================== 核心数据快览 ==================== */
+        .metrics-section {
+            padding: var(--spacing-xl) 0;
+            background: var(--bg-color);
         }
         
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 40px;
+            margin-bottom: var(--spacing-lg);
         }
         
         .section-title {
-            font-size: 2em;
-            color: #1f2937;
+            font-size: 32px;
+            color: var(--text-color);
+            margin-bottom: 0;
             position: relative;
-            padding-bottom: 15px;
+            padding-bottom: var(--spacing-sm);
         }
         
         .section-title::after {
@@ -131,189 +163,60 @@
             left: 0;
             width: 60px;
             height: 4px;
-            background: linear-gradient(90deg, #f97316, #ea580c);
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
             border-radius: 2px;
         }
         
-        .view-all-btn {
-            background: linear-gradient(135deg, #f97316, #ea580c);
-            color: white;
-            padding: 12px 25px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .view-all-btn:hover {
-            transform: translateX(5px);
-            box-shadow: 0 10px 20px rgba(249, 115, 22, 0.3);
-        }
-        
-        /* 报告卡片网格 */
-        .report-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 30px;
-        }
-        
-        .report-card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            border: 1px solid #e5e7eb;
-        }
-        
-        .report-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-        }
-        
-        .report-card-header {
-            padding: 20px;
-            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-            color: white;
-        }
-        
-        .report-type-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            background: rgba(255,255,255,0.2);
-            margin-bottom: 10px;
-        }
-        
-        .report-card-title {
-            font-size: 1.2em;
-            margin: 0;
-            line-height: 1.4;
-        }
-        
-        .report-card-body {
-            padding: 20px;
-        }
-        
-        .report-date {
-            color: #6b7280;
-            font-size: 14px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .report-summary {
-            color: #4b5563;
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-        
-        .report-card-footer {
-            padding: 0 20px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .read-more-btn {
-            background: #f3f4f6;
-            color: #f97316;
-            padding: 8px 20px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-        
-        .read-more-btn:hover {
-            background: #f97316;
-            color: white;
-        }
-        
-        /* 数据可视化区域 */
-        .data-viz-section {
-            padding: 60px 0;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: white;
-        }
-        
-        .data-viz-section .section-title {
-            color: white;
-        }
-        
-        .data-viz-section .section-title::after {
-            background: linear-gradient(90deg, #f97316, #fbbf24);
-        }
-        
-        .charts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
-        }
-        
-        .chart-card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 16px;
-            padding: 25px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        .chart-title {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .chart-container {
-            height: 300px;
-        }
-        
-        /* 指标卡片 */
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 40px 0;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-md);
         }
         
         .metric-card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--card-bg);
+            padding: var(--spacing-md);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
             transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
         }
         
         .metric-card:hover {
-            background: rgba(255,255,255,0.1);
-            transform: translateY(-3px);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px -5px rgba(30, 58, 95, 0.1);
+            border-color: var(--secondary-color);
+        }
+        
+        .metric-card.active {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(30, 58, 95, 0.1);
+        }
+        
+        .metric-icon {
+            font-size: 28px;
+            color: var(--secondary-color);
+            margin-bottom: var(--spacing-sm);
         }
         
         .metric-value {
-            font-size: 2em;
-            font-weight: 700;
-            color: #f97316;
-            margin-bottom: 5px;
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-xs);
         }
         
         .metric-label {
-            color: #9ca3af;
             font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-xs);
         }
         
         .metric-change {
-            font-size: 12px;
-            margin-top: 5px;
+            font-size: 13px;
+            font-weight: 600;
         }
         
         .metric-change.positive {
@@ -324,47 +227,294 @@
             color: #ef4444;
         }
         
-        /* 数据来源信息 */
-        .data-source-section {
-            background: #f8fafc;
-            padding: 40px 0;
-            border-top: 1px solid #e5e7eb;
-        }
-        
-        .source-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            margin-top: 30px;
-        }
-        
-        .source-card {
-            display: flex;
-            align-items: flex-start;
-            gap: 15px;
-            padding: 20px;
+        /* ==================== 最新研究报告 ==================== */
+        .reports-section {
+            padding: var(--spacing-xl) 0;
             background: white;
+        }
+        
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-md);
+        }
+        
+        .report-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .report-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px -5px rgba(30, 58, 95, 0.1);
+        }
+        
+        .report-card-header {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+        }
+        
+        .report-type-badge {
+            display: inline-block;
+            padding: 2px 10px;
             border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(255,255,255,0.2);
+            margin-bottom: 8px;
         }
         
-        .source-icon {
-            font-size: 24px;
-            color: #f97316;
+        .report-card-title {
+            font-size: 16px;
+            margin: 0;
+            line-height: 1.4;
+            font-weight: 600;
+            color: white;
         }
         
-        .source-content h4 {
-            color: #1f2937;
-            margin-bottom: 5px;
+        .report-card-body {
+            padding: var(--spacing-md);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
         
-        .source-content p {
-            color: #6b7280;
+        .report-date {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .report-summary {
+            color: var(--text-secondary);
             font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: var(--spacing-md);
+            flex: 1;
+        }
+        
+        .report-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: var(--spacing-sm);
+            border-top: 1px solid var(--border-light);
+        }
+        
+        .read-more-btn {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .read-more-btn:hover {
+            color: var(--secondary-color);
+        }
+        
+        .view-all-btn {
+            padding: 10px 24px;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .view-all-btn:hover {
+            background: var(--primary-dark);
+            transform: translateX(3px);
+        }
+        
+        /* ==================== 特色分析入口 ==================== */
+        .features-section {
+            padding: var(--spacing-xl) 0;
+            background: var(--bg-color);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-md);
+        }
+        
+        .feature-card {
+            background: var(--card-bg);
+            padding: var(--spacing-md);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px -5px rgba(30, 58, 95, 0.1);
+            border-color: var(--secondary-color);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-md);
+            font-size: 28px;
+            color: white;
+        }
+        
+        .feature-card h3 {
+            font-size: 18px;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .feature-link {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .feature-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* ==================== CTA区域 ==================== */
+        .cta-section {
+            padding: var(--spacing-xl) 0;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .cta-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--spacing-xl);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .cta-text {
+            flex: 1;
+        }
+        
+        .cta-text h2 {
+            color: white;
+            font-size: 36px;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .cta-text p {
+            color: rgba(255,255,255,0.9);
+            font-size: 18px;
             margin: 0;
         }
         
-        /* 动画效果 */
+        .cta-actions {
+            display: flex;
+            gap: var(--spacing-md);
+        }
+        
+        .cta-btn {
+            padding: 16px 32px;
+            background: white;
+            color: var(--primary-color);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .cta-btn-outline {
+            padding: 16px 32px;
+            background: transparent;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            border: 2px solid rgba(255,255,255,0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .cta-btn-outline:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: white;
+        }
+        
+        /* ==================== 筛选器 ==================== */
+        .filter-bar {
+            display: flex;
+            gap: var(--spacing-xs);
+            margin-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 8px 18px;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+        
+        /* ==================== 动画 ==================== */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -380,43 +530,83 @@
             animation: fadeInUp 0.6s ease forwards;
         }
         
-        /* 筛选器 */
-        .filter-bar {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
+        /* ==================== 响应式样式 ==================== */
+        @media (max-width: 1199px) {
+            .hero h2 {
+                font-size: 44px;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .reports-grid,
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
         
-        .filter-btn {
-            padding: 8px 20px;
-            border: 2px solid #e5e7eb;
-            background: white;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 14px;
-        }
-        
-        .filter-btn:hover,
-        .filter-btn.active {
-            background: #f97316;
-            border-color: #f97316;
-            color: white;
-        }
-        
-        /* 响应式 */
-        @media (max-width: 768px) {
-            .charts-grid {
+        @media (max-width: 767px) {
+            .hero {
+                min-height: auto;
+                padding: var(--spacing-xl) 0;
+            }
+            
+            .hero h2 {
+                font-size: 32px;
+            }
+            
+            .hero-subtitle {
+                font-size: 16px;
+            }
+            
+            .hero-actions {
+                flex-direction: column;
+            }
+            
+            .hero-btn-primary,
+            .hero-btn-secondary {
+                text-align: center;
+            }
+            
+            .hero-stats {
+                flex-wrap: wrap;
+                gap: var(--spacing-md);
+            }
+            
+            .section-title {
+                font-size: 24px;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-sm);
+            }
+            
+            .metrics-grid,
+            .reports-grid,
+            .features-grid {
                 grid-template-columns: 1fr;
             }
             
-            .report-cards {
-                grid-template-columns: 1fr;
+            .cta-content {
+                flex-direction: column;
+                text-align: center;
             }
             
-            .quick-cards {
-                grid-template-columns: 1fr;
+            .cta-text h2 {
+                font-size: 28px;
+            }
+            
+            .cta-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .cta-btn,
+            .cta-btn-outline {
+                text-align: center;
             }
         }
     </style>
@@ -424,166 +614,212 @@
 <body>
     <header>
         <div class="container">
-            <h1>Stay Hungry</h1>
-            <p class="tagline">聚焦中国科技创新金融的独立学习研究平台</p>
-            <nav>
-                <ul>
-                    <li><a href="index.html" class="active">首页</a></li>
-                    <li><a href="star-market.html">科创板</a></li>
-                    <li><a href="vcpe.html">VC/PE</a></li>
-                    <li><a href="policy.html">政策解读</a></li>
-                    <li><a href="report-viewer.html">研究报告</a></li>
-                    <li><a href="research.html">研究笔记</a></li>
-                    <li><a href="features.html">功能介绍</a></li>
-                </ul>
-            </nav>
+            <div class="header-content">
+                <div class="brand">
+                    <h1>Stay Hungry</h1>
+                    <p class="tagline">聚焦中国科技创新金融的独立学习研究平台</p>
+                </div>
+                <button class="hamburger" id="hamburgerBtn" aria-label="菜单">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <nav id="mainNav">
+                    <ul>
+                        <li><a href="index.html" class="active">首页</a></li>
+                        <li><a href="star-market.html">科创板</a></li>
+                        <li><a href="vcpe.html">VC/PE</a></li>
+                        <li><a href="policy.html">政策解读</a></li>
+                        <li><a href="report-viewer.html">研究报告</a></li>
+                        <li><a href="research.html">研究笔记</a></li>
+                        <li><a href="features.html">功能介绍</a></li>
+                    </ul>
+                </nav>
+            </div>
         </div>
     </header>
 
-    <!-- 搜索栏 -->
-    <section class="search-section">
+    <!-- Hero区域 -->
+    <section class="hero">
         <div class="container">
-            <div class="search-container">
-                <input type="text" class="search-box" placeholder="搜索报告、数据、文章..." id="searchInput">
-                <button class="search-btn" onclick="performSearch()">
-                    <i class="fas fa-search"></i>
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- 快速入口 -->
-    <section class="quick-access">
-        <div class="container">
-            <div class="quick-cards">
-                <div class="quick-card animate-fadeInUp">
-                    <i class="fas fa-chart-line"></i>
-                    <h3>最新数据</h3>
-                    <p>科创板、VC/PE、政策数据每日自动更新</p>
-                    <a href="report-viewer.html" class="btn">查看数据 →</a>
+            <div class="hero-content">
+                <h2>洞察科技创新<br>把握投资先机</h2>
+                <p class="hero-subtitle">专注中国科技创新金融研究，提供科创板、VC/PE、政策解读等深度分析与数据洞察，助力投资决策。</p>
+                <div class="hero-actions">
+                    <a href="report-viewer.html" class="hero-btn-primary">
+                        <i class="fas fa-search"></i> 探索研究报告
+                    </a>
+                    <a href="#features" class="hero-btn-secondary">
+                        <i class="fas fa-chart-line"></i> 了解功能特色
+                    </a>
                 </div>
-                <div class="quick-card animate-fadeInUp" style="animation-delay: 0.1s">
-                    <i class="fas fa-file-download"></i>
-                    <h3>下载报告</h3>
-                    <p>PDF格式的深度研究报告免费下载</p>
-                    <a href="report-viewer.html" class="btn">下载报告 →</a>
-                </div>
-                <div class="quick-card animate-fadeInUp" style="animation-delay: 0.2s">
-                    <i class="fas fa-bell"></i>
-                    <h3>订阅更新</h3>
-                    <p>获取每日市场简报和投资机会提醒</p>
-                    <a href="#" class="btn" onclick="showSubscribeModal()">立即订阅 →</a>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <span class="hero-stat-value">500+</span>
+                        <span class="hero-stat-label">研究报告</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-value">50K+</span>
+                        <span class="hero-stat-label">数据条目</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-value">每日</span>
+                        <span class="hero-stat-label">自动更新</span>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 数据可视化 -->
-    <section class="data-viz-section">
+    <!-- 核心数据快览 -->
+    <section class="metrics-section" id="metrics">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">📊 实时数据洞察</h2>
-                <div class="filter-bar">
-                    <button class="filter-btn active" onclick="switchTimeRange('1M')">近1月</button>
-                    <button class="filter-btn" onclick="switchTimeRange('3M')">近3月</button>
-                    <button class="filter-btn" onclick="switchTimeRange('6M')">近6月</button>
-                    <button class="filter-btn" onclick="switchTimeRange('1Y')">近1年</button>
-                </div>
+                <h2 class="section-title">核心数据快览</h2>
+                <span class="update-time">
+                    <i class="fas fa-sync-alt"></i> 数据更新于 2026-03-08
+                </span>
             </div>
-
-            <!-- 关键指标卡片 -->
             <div class="metrics-grid">
-                <div class="metric-card">
+                <div class="metric-card active" data-metric="vc">
+                    <div class="metric-icon">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
                     <div class="metric-value">650</div>
                     <div class="metric-label">本月VC投资事件</div>
-                    <div class="metric-change positive">↑ 12.5% 同比</div>
+                    <div class="metric-change positive">
+                        <i class="fas fa-arrow-up"></i> 12.5% 同比
+                    </div>
                 </div>
-                <div class="metric-card">
+                <div class="metric-card" data-metric="amount">
+                    <div class="metric-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
                     <div class="metric-value">18.5亿</div>
                     <div class="metric-label">VC投资总额(美元)</div>
-                    <div class="metric-change positive">↑ 8.3% 环比</div>
+                    <div class="metric-change positive">
+                        <i class="fas fa-arrow-up"></i> 8.3% 环比
+                    </div>
                 </div>
-                <div class="metric-card">
+                <div class="metric-card" data-metric="index">
+                    <div class="metric-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
                     <div class="metric-value">1,245.68</div>
                     <div class="metric-label">科创50指数</div>
-                    <div class="metric-change positive">↑ 1.25%</div>
+                    <div class="metric-change positive">
+                        <i class="fas fa-arrow-up"></i> 1.25% 今日
+                    </div>
                 </div>
-                <div class="metric-card">
+                <div class="metric-card" data-metric="market">
+                    <div class="metric-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
                     <div class="metric-value">20,222亿</div>
                     <div class="metric-label">科创板总市值</div>
-                    <div class="metric-change positive">↑ 3.2%</div>
-                </div>
-            </div>
-
-            <!-- 图表区域 -->
-            <div class="charts-grid">
-                <div class="chart-card">
-                    <h3 class="chart-title"><i class="fas fa-chart-line"></i> VC投资趋势</h3>
-                    <div id="vcTrendChart" class="chart-container"></div>
-                </div>
-                <div class="chart-card">
-                    <h3 class="chart-title"><i class="fas fa-chart-area"></i> 科创板估值走势</h3>
-                    <div id="starMarketChart" class="chart-container"></div>
+                    <div class="metric-change positive">
+                        <i class="fas fa-arrow-up"></i> 3.2% 今日
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 最新报告 -->
-    <section class="reports-section">
+    <!-- 最新研究报告 -->
+    <section class="reports-section" id="reports">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">📚 最新研究报告</h2>
-                <a href="report-viewer.html" class="view-all-btn">查看全部报告 →</a>
+                <h2 class="section-title">最新研究报告</h2>
+                <a href="report-viewer.html" class="view-all-btn">查看全部 →</a>
             </div>
             
             <div class="filter-bar">
-                <button class="filter-btn active" onclick="filterReports('all')">全部</button>
-                <button class="filter-btn" onclick="filterReports('market')">市场分析</button>
-                <button class="filter-btn" onclick="filterReports('vc')">VC/PE研究</button>
-                <button class="filter-btn" onclick="filterReports('policy')">政策解读</button>
+                <button class="filter-btn active" data-filter="all">全部</button>
+                <button class="filter-btn" data-filter="market">市场分析</button>
+                <button class="filter-btn" data-filter="vc">VC/PE研究</button>
+                <button class="filter-btn" data-filter="policy">政策解读</button>
             </div>
 
-            <div class="report-cards" id="reportCards">
+            <div class="reports-grid" id="reportsGrid">
                 <!-- 报告卡片将通过JavaScript动态生成 -->
             </div>
         </div>
     </section>
 
-    <!-- 数据来源 -->
-    <section class="data-source-section">
+    <!-- 特色分析入口 -->
+    <section class="features-section" id="features">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">🛡️ 数据来源与可信度</h2>
+                <h2 class="section-title">特色分析入口</h2>
             </div>
-            <div class="source-grid">
-                <div class="source-card">
-                    <i class="fas fa-database source-icon"></i>
-                    <div class="source-content">
-                        <h4>权威数据来源</h4>
-                        <p>上交所、清科、IT桔子、国务院、证监会、科技部等官方渠道</p>
+            <div class="features-grid">
+                <div class="feature-card animate-fadeInUp">
+                    <div class="feature-icon">
+                        <i class="fas fa-rocket"></i>
                     </div>
+                    <h3>科创板深度分析</h3>
+                    <p>实时追踪科创板企业动态，IPO数据、市值排名、行业分布全方位分析</p>
+                    <a href="star-market.html" class="feature-link">查看分析 →</a>
                 </div>
-                <div class="source-card">
-                    <i class="fas fa-clock source-icon"></i>
-                    <div class="source-content">
-                        <h4>每日自动更新</h4>
-                        <p>数据每日北京时间08:00自动抓取更新，确保时效性</p>
+                <div class="feature-card animate-fadeInUp" style="animation-delay: 0.1s">
+                    <div class="feature-icon">
+                        <i class="fas fa-handshake"></i>
                     </div>
+                    <h3>VC/PE投资追踪</h3>
+                    <p>监控风险投资市场动向，热门赛道、活跃机构、投融资事件实时更新</p>
+                    <a href="vcpe.html" class="feature-link">查看追踪 →</a>
                 </div>
-                <div class="source-card">
-                    <i class="fas fa-user-tie source-icon"></i>
-                    <div class="source-content">
-                        <h4>专业研究团队</h4>
-                        <p>由科技金融领域专家组成的研究团队深度分析</p>
+                <div class="feature-card animate-fadeInUp" style="animation-delay: 0.2s">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-contract"></i>
                     </div>
+                    <h3>政策解读专栏</h3>
+                    <p>深度解析科技金融政策，行业影响、投资机会、风险评估全面覆盖</p>
+                    <a href="policy.html" class="feature-link">查看解读 →</a>
                 </div>
-                <div class="source-card">
-                    <i class="fas fa-shield-alt source-icon"></i>
-                    <div class="source-content">
-                        <h4>数据质量保证</h4>
-                        <p>多重数据验证机制，去重和交叉验证确保准确性</p>
+                <div class="feature-card animate-fadeInUp" style="animation-delay: 0.3s">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
                     </div>
+                    <h3>AI智能分析</h3>
+                    <p>基于大语言模型的智能报告生成，自动化数据分析和趋势预测</p>
+                    <a href="features.html" class="feature-link">了解详情 →</a>
+                </div>
+                <div class="feature-card animate-fadeInUp" style="animation-delay: 0.4s">
+                    <div class="feature-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>数据可视化</h3>
+                    <p>Interactive图表展示，支持多维度数据筛选和自定义时间范围</p>
+                    <a href="features.html" class="feature-link">探索数据 →</a>
+                </div>
+                <div class="feature-card animate-fadeInUp" style="animation-delay: 0.5s">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3>实时预警系统</h3>
+                    <p>自定义监控指标，重大事件实时推送，不错过任何投资机会</p>
+                    <a href="features.html" class="feature-link">设置预警 →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA区域 -->
+    <section class="cta-section" id="cta">
+        <div class="container">
+            <div class="cta-content">
+                <div class="cta-text">
+                    <h2>开始您的研究之旅</h2>
+                    <p>获取深度研究报告和数据洞察，把握科技创新投资先机</p>
+                </div>
+                <div class="cta-actions">
+                    <a href="report-viewer.html" class="cta-btn">
+                        <i class="fas fa-download"></i> 下载报告
+                    </a>
+                    <a href="#" class="cta-btn-outline" onclick="showSubscribeModal()">
+                        <i class="fas fa-envelope"></i> 订阅更新
+                    </a>
                 </div>
             </div>
         </div>
@@ -591,19 +827,39 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 Stay Hungry | 数据仅供研究参考</p>
+            <p>© 2026 Stay Hungry | 数据仅供研究参考</p>
             <p>Stay hungry, stay foolish. 保持饥饿，保持愚蠢。</p>
         </div>
     </footer>
 
     <script>
-        // 报告数据
+        // ==================== 汉堡菜单 ====================
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const mainNav = document.getElementById('mainNav');
+        
+        hamburgerBtn.addEventListener('click', () => {
+            hamburgerBtn.classList.toggle('active');
+            mainNav.classList.toggle('active');
+            document.body.style.overflow = mainNav.classList.contains('active') ? 'hidden' : '';
+        });
+        
+        // 点击导航链接后关闭菜单
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburgerBtn.classList.remove('active');
+                mainNav.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+        
+        // ==================== 报告数据 ====================
         const reports = [
             {
                 file: 'policy_analysis_2026-03-08.md',
                 title: '科创金融政策深度解读',
                 date: '2026-03-08',
                 type: 'policy',
+                typeLabel: '政策解读',
                 desc: '深度解析科技保险政策：摘要、背景、行业影响、VC/科创板影响、研究者评论'
             },
             {
@@ -611,6 +867,7 @@
                 title: 'VC投资市场日报',
                 date: '2026-03-08',
                 type: 'vc',
+                typeLabel: 'VC/PE研究',
                 desc: '8起重大投融资事件深度分析，总投资规模4.3亿美元，涵盖AI、生物医药、半导体等赛道'
             },
             {
@@ -618,6 +875,7 @@
                 title: 'VC/PE投资市场分析报告',
                 date: '2026-03-07',
                 type: 'vc',
+                typeLabel: 'VC/PE研究',
                 desc: '月度VC/PE市场概况、热门赛道和活跃机构排名，红杉、高瓴等头部机构动态'
             },
             {
@@ -625,6 +883,7 @@
                 title: '科创板市场深度报告',
                 date: '2026-03-07',
                 type: 'market',
+                typeLabel: '市场分析',
                 desc: '科创板上市公司分析、市值排名和行业分布，中芯国际、金山办公等龙头企业研究'
             },
             {
@@ -632,6 +891,7 @@
                 title: '科创板市场分析报告',
                 date: '2026-03-07',
                 type: 'market',
+                typeLabel: '市场分析',
                 desc: '科创板市场概况和IPO动态，近12个月IPO数量94家，募资总额1,457亿元'
             },
             {
@@ -639,27 +899,22 @@
                 title: '科技金融政策周报',
                 date: '2026-03-07',
                 type: 'policy',
+                typeLabel: '政策解读',
                 desc: '本周科技金融相关政策梳理和影响分析，涵盖科技保险、科技成果转化等领域'
             }
         ];
-
-        // 生成报告卡片
+        
+        // ==================== 生成报告卡片 ====================
         function generateReportCards(filterType = 'all') {
-            const container = document.getElementById('reportCards');
+            const container = document.getElementById('reportsGrid');
             const filteredReports = filterType === 'all' 
                 ? reports 
                 : reports.filter(r => r.type === filterType);
             
-            const typeLabels = {
-                'market': '市场分析',
-                'vc': 'VC/PE研究',
-                'policy': '政策解读'
-            };
-            
             container.innerHTML = filteredReports.map((report, index) => `
                 <div class="report-card animate-fadeInUp" style="animation-delay: ${index * 0.1}s">
                     <div class="report-card-header">
-                        <span class="report-type-badge">${typeLabels[report.type]}</span>
+                        <span class="report-type-badge">${report.typeLabel}</span>
                         <h3 class="report-card-title">${report.title}</h3>
                     </div>
                     <div class="report-card-body">
@@ -668,148 +923,48 @@
                             ${report.date}
                         </div>
                         <p class="report-summary">${report.desc}</p>
-                    </div>
-                    <div class="report-card-footer">
-                        <span style="color: #6b7280; font-size: 13px;">
-                            <i class="far fa-file-alt" style="margin-right: 5px;"></i>
-                            深度报告
-                        </span>
-                        <a href="report-viewer.html?file=${report.file}" class="read-more-btn">
-                            阅读报告 <i class="fas fa-arrow-right" style="margin-left: 5px;"></i>
-                        </a>
+                        <div class="report-card-footer">
+                            <span style="color: var(--text-muted); font-size: 13px;">
+                                <i class="far fa-file-alt" style="margin-right: 5px;"></i>
+                                深度报告
+                            </span>
+                            <a href="report-viewer.html?file=${report.file}" class="read-more-btn">
+                                阅读报告 <i class="fas fa-arrow-right" style="margin-left: 5px;"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
             `).join('');
         }
-
-        // 筛选报告
-        function filterReports(type) {
-            // 更新按钮状态
-            document.querySelectorAll('.reports-section .filter-btn').forEach(btn => {
-                btn.classList.remove('active');
+        
+        // ==================== 筛选报告 ====================
+        document.querySelectorAll('.reports-section .filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // 更新按钮状态
+                document.querySelectorAll('.reports-section .filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // 重新生成卡片
+                generateReportCards(this.dataset.filter);
             });
-            event.target.classList.add('active');
-            
-            // 重新生成卡片
-            generateReportCards(type);
-        }
-
-        // 绘制VC趋势图
-        function drawVCTrendChart() {
-            const trace = {
-                x: ['2025-09', '2025-10', '2025-11', '2025-12', '2026-01', '2026-02', '2026-03'],
-                y: [520, 580, 610, 590, 620, 635, 650],
-                type: 'scatter',
-                mode: 'lines+markers',
-                name: '投资事件数',
-                line: {
-                    color: '#f97316',
-                    width: 3
-                },
-                marker: {
-                    size: 8,
-                    color: '#f97316'
-                },
-                fill: 'tozeroy',
-                fillcolor: 'rgba(249, 115, 22, 0.1)'
-            };
-
-            const layout = {
-                paper_bgcolor: 'rgba(0,0,0,0)',
-                plot_bgcolor: 'rgba(0,0,0,0)',
-                font: {
-                    color: '#9ca3af'
-                },
-                xaxis: {
-                    gridcolor: 'rgba(255,255,255,0.1)',
-                    zerolinecolor: 'rgba(255,255,255,0.1)'
-                },
-                yaxis: {
-                    gridcolor: 'rgba(255,255,255,0.1)',
-                    zerolinecolor: 'rgba(255,255,255,0.1)',
-                    title: '投资事件数'
-                },
-                margin: { t: 20, r: 20, b: 40, l: 60 },
-                showlegend: false
-            };
-
-            Plotly.newPlot('vcTrendChart', [trace], layout, {responsive: true, displayModeBar: false});
-        }
-
-        // 绘制科创板走势图
-        function drawStarMarketChart() {
-            const trace = {
-                x: ['2025-09', '2025-10', '2025-11', '2025-12', '2026-01', '2026-02', '2026-03'],
-                y: [1150, 1180, 1220, 1190, 1235, 1220, 1245.68],
-                type: 'scatter',
-                mode: 'lines',
-                name: '科创50指数',
-                line: {
-                    color: '#10b981',
-                    width: 3
-                },
-                fill: 'tozeroy',
-                fillcolor: 'rgba(16, 185, 129, 0.1)'
-            };
-
-            const layout = {
-                paper_bgcolor: 'rgba(0,0,0,0)',
-                plot_bgcolor: 'rgba(0,0,0,0)',
-                font: {
-                    color: '#9ca3af'
-                },
-                xaxis: {
-                    gridcolor: 'rgba(255,255,255,0.1)',
-                    zerolinecolor: 'rgba(255,255,255,0.1)'
-                },
-                yaxis: {
-                    gridcolor: 'rgba(255,255,255,0.1)',
-                    zerolinecolor: 'rgba(255,255,255,0.1)',
-                    title: '指数点位'
-                },
-                margin: { t: 20, r: 20, b: 40, l: 60 },
-                showlegend: false
-            };
-
-            Plotly.newPlot('starMarketChart', [trace], layout, {responsive: true, displayModeBar: false});
-        }
-
-        // 切换时间范围
-        function switchTimeRange(range) {
-            document.querySelectorAll('.data-viz-section .filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            // 这里可以添加切换数据逻辑
-            console.log('切换到时间范围:', range);
-        }
-
-        // 搜索功能
-        function performSearch() {
-            const query = document.getElementById('searchInput').value;
-            if (query.trim()) {
-                window.location.href = `report-viewer.html?search=${encodeURIComponent(query)}`;
-            }
-        }
-
-        // 监听回车键搜索
-        document.getElementById('searchInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                performSearch();
-            }
         });
-
-        // 订阅弹窗
+        
+        // ==================== 指标卡片交互 ====================
+        document.querySelectorAll('.metric-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.querySelectorAll('.metric-card').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // ==================== 订阅弹窗 ====================
         function showSubscribeModal() {
             alert('订阅功能即将上线！\n\n您可以通过以下方式获取更新：\n1. 关注GitHub仓库获取最新代码\n2. 每日访问查看最新报告\n3. 收藏本页面随时查看');
         }
-
-        // 页面加载完成后初始化
+        
+        // ==================== 页面加载完成后初始化 ====================
         document.addEventListener('DOMContentLoaded', function() {
             generateReportCards();
-            drawVCTrendChart();
-            drawStarMarketChart();
         });
     </script>
 </body>
