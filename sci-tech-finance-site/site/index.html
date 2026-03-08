@@ -3,107 +3,814 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <title>Stay Hungry - 中国科技创新金融研究平台</title>
     <link rel="stylesheet" href="static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 搜索栏样式 */
+        .search-section {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 30px 0;
+            margin-top: -20px;
+        }
+        
+        .search-container {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid #f97316;
+            border-radius: 50px;
+            font-size: 16px;
+            background: rgba(255,255,255,0.95);
+            transition: all 0.3s ease;
+        }
+        
+        .search-box:focus {
+            outline: none;
+            box-shadow: 0 0 20px rgba(249, 115, 22, 0.3);
+        }
+        
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #f97316;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .search-btn:hover {
+            background: #ea580c;
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        /* 快速入口卡片 */
+        .quick-access {
+            padding: 40px 0;
+            background: #f8fafc;
+        }
+        
+        .quick-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .quick-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .quick-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border-color: #f97316;
+        }
+        
+        .quick-card i {
+            font-size: 40px;
+            color: #f97316;
+            margin-bottom: 15px;
+        }
+        
+        .quick-card h3 {
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+        
+        .quick-card p {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        /* 报告卡片区域 */
+        .reports-section {
+            padding: 60px 0;
+            background: white;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 2em;
+            color: #1f2937;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #f97316, #ea580c);
+            border-radius: 2px;
+        }
+        
+        .view-all-btn {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .view-all-btn:hover {
+            transform: translateX(5px);
+            box-shadow: 0 10px 20px rgba(249, 115, 22, 0.3);
+        }
+        
+        /* 报告卡片网格 */
+        .report-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        
+        .report-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .report-card-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            color: white;
+        }
+        
+        .report-type-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(255,255,255,0.2);
+            margin-bottom: 10px;
+        }
+        
+        .report-card-title {
+            font-size: 1.2em;
+            margin: 0;
+            line-height: 1.4;
+        }
+        
+        .report-card-body {
+            padding: 20px;
+        }
+        
+        .report-date {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .report-summary {
+            color: #4b5563;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .report-card-footer {
+            padding: 0 20px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .read-more-btn {
+            background: #f3f4f6;
+            color: #f97316;
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .read-more-btn:hover {
+            background: #f97316;
+            color: white;
+        }
+        
+        /* 数据可视化区域 */
+        .data-viz-section {
+            padding: 60px 0;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+        }
+        
+        .data-viz-section .section-title {
+            color: white;
+        }
+        
+        .data-viz-section .section-title::after {
+            background: linear-gradient(90deg, #f97316, #fbbf24);
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .chart-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .chart-title {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chart-container {
+            height: 300px;
+        }
+        
+        /* 指标卡片 */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .metric-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-3px);
+        }
+        
+        .metric-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: #f97316;
+            margin-bottom: 5px;
+        }
+        
+        .metric-label {
+            color: #9ca3af;
+            font-size: 14px;
+        }
+        
+        .metric-change {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .metric-change.positive {
+            color: #10b981;
+        }
+        
+        .metric-change.negative {
+            color: #ef4444;
+        }
+        
+        /* 数据来源信息 */
+        .data-source-section {
+            background: #f8fafc;
+            padding: 40px 0;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .source-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .source-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .source-icon {
+            font-size: 24px;
+            color: #f97316;
+        }
+        
+        .source-content h4 {
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+        
+        .source-content p {
+            color: #6b7280;
+            font-size: 14px;
+            margin: 0;
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fadeInUp {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        
+        /* 筛选器 */
+        .filter-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 8px 20px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: #f97316;
+            border-color: #f97316;
+            color: white;
+        }
+        
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .report-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header style="position: relative;">
+    <header>
         <div class="container">
             <h1>Stay Hungry</h1>
             <p class="tagline">聚焦中国科技创新金融的独立学习研究平台</p>
             <nav>
                 <ul>
                     <li><a href="index.html" class="active">首页</a></li>
-                    <li><a href="star-market.html" class="">科创板</a></li>
-                    <li><a href="vcpe.html" class="">VC/PE</a></li>
-                    <li><a href="policy.html" class="">政策解读</a></li>
-                    <li><a href="report-viewer.html" class="">研究报告</a></li>
-                    <li><a href="research.html" class="">研究笔记</a></li>
-                    <li><a href="features.html" class="">功能介绍</a></li>
+                    <li><a href="star-market.html">科创板</a></li>
+                    <li><a href="vcpe.html">VC/PE</a></li>
+                    <li><a href="policy.html">政策解读</a></li>
+                    <li><a href="report-viewer.html">研究报告</a></li>
+                    <li><a href="research.html">研究笔记</a></li>
+                    <li><a href="features.html">功能介绍</a></li>
                 </ul>
             </nav>
         </div>
-        <div class="user-section" style="position: absolute; top: 20px; right: 20px;">
-            <a href="research.html" class="github-login-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: linear-gradient(135deg, #24292e, #586069); color: white; border-radius: 8px; font-size: 14px; font-weight: 600;">
-                <svg viewBox="0 0 16 16" fill="currentColor" style="width: 20px; height: 20px;">
-                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-                </svg>
-                登录
-            </a>
-        </div>
     </header>
 
-    <main class="container">
-        <section class="hero">
-            <h2>中国科技金融研究的数据洞察</h2>
-            <p>每日自动更新 · 数据分析 · 投资追踪 · 政策解读</p>
-            <p class="update-time">数据更新日期: 2026-03-07</p>
-        </section>
+    <!-- 搜索栏 -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-container">
+                <input type="text" class="search-box" placeholder="搜索报告、数据、文章..." id="searchInput">
+                <button class="search-btn" onclick="performSearch()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </section>
 
-        <section class="dashboard">
-            <div class="cards">
-                <div class="card">
-                    <h3>科创板</h3>
-                    <div class="metric">
-                        <span class="number">560+</span>
-                        <span class="label">上市公司</span>
-                    </div>
-                    <p>实时追踪科创板市场表现、IPO动态和估值水平</p>
-                    <a href="star-market.html" class="btn">查看详情 →</a>
+    <!-- 快速入口 -->
+    <section class="quick-access">
+        <div class="container">
+            <div class="quick-cards">
+                <div class="quick-card animate-fadeInUp">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>最新数据</h3>
+                    <p>科创板、VC/PE、政策数据每日自动更新</p>
+                    <a href="report-viewer.html" class="btn">查看数据 →</a>
                 </div>
-                
-                <div class="card">
-                    <h3>VC/PE</h3>
-                    <div class="metric">
-                        <span class="number">650</span>
-                        <span class="label">月度投资事件</span>
-                    </div>
-                    <p>深度分析投资趋势、热门赛道和活跃机构</p>
-                    <a href="vcpe.html" class="btn">查看详情 →</a>
+                <div class="quick-card animate-fadeInUp" style="animation-delay: 0.1s">
+                    <i class="fas fa-file-download"></i>
+                    <h3>下载报告</h3>
+                    <p>PDF格式的深度研究报告免费下载</p>
+                    <a href="report-viewer.html" class="btn">下载报告 →</a>
                 </div>
-                
-                <div class="card">
-                    <h3>政策解读</h3>
-                    <div class="metric">
-                        <span class="number">5+</span>
-                        <span class="label">周度政策</span>
-                    </div>
-                    <p>及时解读科技金融政策，分析政策影响</p>
-                    <a href="policy.html" class="btn">查看详情 →</a>
+                <div class="quick-card animate-fadeInUp" style="animation-delay: 0.2s">
+                    <i class="fas fa-bell"></i>
+                    <h3>订阅更新</h3>
+                    <p>获取每日市场简报和投资机会提醒</p>
+                    <a href="#" class="btn" onclick="showSubscribeModal()">立即订阅 →</a>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="latest-reports">
-            <h2>最新研究报告</h2>
-            <div class="report-list">
-                <article class="report-item">
-                    <h3><a href="reports/market_report_2026-03-07.md">科创板市场分析报告 - 2026-03-07</a></h3>
-                    <p class="meta">发布日期: 2026-03-07 | 类型: 市场分析</p>
-                    <p class="summary">涵盖科创板估值分析、行业分布、IPO趋势等核心指标</p>
-                </article>
-                
-                <article class="report-item">
-                    <h3><a href="reports/vcpe_report_2026-03-07.md">VC/PE投资市场分析报告 - 2026-03-07</a></h3>
-                    <p class="meta">发布日期: 2026-03-07 | 类型: 投资分析</p>
-                    <p class="summary">深度分析投资事件、热门赛道、活跃机构及市场洞察</p>
-                </article>
-                
-                <article class="report-item">
-                    <h3><a href="reports/policy_digest_2026-03-07.md">科技金融政策周报 - 2026-03-07</a></h3>
-                    <p class="meta">发布日期: 2026-03-07 | 类型: 政策解读</p>
-                    <p class="summary">本周科技金融相关政策梳理和影响分析</p>
-                </article>
+    <!-- 数据可视化 -->
+    <section class="data-viz-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">📊 实时数据洞察</h2>
+                <div class="filter-bar">
+                    <button class="filter-btn active" onclick="switchTimeRange('1M')">近1月</button>
+                    <button class="filter-btn" onclick="switchTimeRange('3M')">近3月</button>
+                    <button class="filter-btn" onclick="switchTimeRange('6M')">近6月</button>
+                    <button class="filter-btn" onclick="switchTimeRange('1Y')">近1年</button>
+                </div>
             </div>
-        </section>
-    </main>
+
+            <!-- 关键指标卡片 -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value">650</div>
+                    <div class="metric-label">本月VC投资事件</div>
+                    <div class="metric-change positive">↑ 12.5% 同比</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">18.5亿</div>
+                    <div class="metric-label">VC投资总额(美元)</div>
+                    <div class="metric-change positive">↑ 8.3% 环比</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">1,245.68</div>
+                    <div class="metric-label">科创50指数</div>
+                    <div class="metric-change positive">↑ 1.25%</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">20,222亿</div>
+                    <div class="metric-label">科创板总市值</div>
+                    <div class="metric-change positive">↑ 3.2%</div>
+                </div>
+            </div>
+
+            <!-- 图表区域 -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3 class="chart-title"><i class="fas fa-chart-line"></i> VC投资趋势</h3>
+                    <div id="vcTrendChart" class="chart-container"></div>
+                </div>
+                <div class="chart-card">
+                    <h3 class="chart-title"><i class="fas fa-chart-area"></i> 科创板估值走势</h3>
+                    <div id="starMarketChart" class="chart-container"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 最新报告 -->
+    <section class="reports-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">📚 最新研究报告</h2>
+                <a href="report-viewer.html" class="view-all-btn">查看全部报告 →</a>
+            </div>
+            
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="filterReports('all')">全部</button>
+                <button class="filter-btn" onclick="filterReports('market')">市场分析</button>
+                <button class="filter-btn" onclick="filterReports('vc')">VC/PE研究</button>
+                <button class="filter-btn" onclick="filterReports('policy')">政策解读</button>
+            </div>
+
+            <div class="report-cards" id="reportCards">
+                <!-- 报告卡片将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 数据来源 -->
+    <section class="data-source-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">🛡️ 数据来源与可信度</h2>
+            </div>
+            <div class="source-grid">
+                <div class="source-card">
+                    <i class="fas fa-database source-icon"></i>
+                    <div class="source-content">
+                        <h4>权威数据来源</h4>
+                        <p>上交所、清科、IT桔子、国务院、证监会、科技部等官方渠道</p>
+                    </div>
+                </div>
+                <div class="source-card">
+                    <i class="fas fa-clock source-icon"></i>
+                    <div class="source-content">
+                        <h4>每日自动更新</h4>
+                        <p>数据每日北京时间08:00自动抓取更新，确保时效性</p>
+                    </div>
+                </div>
+                <div class="source-card">
+                    <i class="fas fa-user-tie source-icon"></i>
+                    <div class="source-content">
+                        <h4>专业研究团队</h4>
+                        <p>由科技金融领域专家组成的研究团队深度分析</p>
+                    </div>
+                </div>
+                <div class="source-card">
+                    <i class="fas fa-shield-alt source-icon"></i>
+                    <div class="source-content">
+                        <h4>数据质量保证</h4>
+                        <p>多重数据验证机制，去重和交叉验证确保准确性</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <footer>
         <div class="container">
             <p>&copy; 2026 Stay Hungry | 数据仅供研究参考</p>
             <p>Stay hungry, stay foolish. 保持饥饿，保持愚蠢。</p>
-            <p>自动更新于 2026-03-07 16:44:42</p>
         </div>
     </footer>
+
+    <script>
+        // 报告数据
+        const reports = [
+            {
+                file: 'policy_analysis_2026-03-08.md',
+                title: '科创金融政策深度解读',
+                date: '2026-03-08',
+                type: 'policy',
+                desc: '深度解析科技保险政策：摘要、背景、行业影响、VC/科创板影响、研究者评论'
+            },
+            {
+                file: 'vc_analysis_2026-03-08.md',
+                title: 'VC投资市场日报',
+                date: '2026-03-08',
+                type: 'vc',
+                desc: '8起重大投融资事件深度分析，总投资规模4.3亿美元，涵盖AI、生物医药、半导体等赛道'
+            },
+            {
+                file: 'vcpe_report_2026-03-07.md',
+                title: 'VC/PE投资市场分析报告',
+                date: '2026-03-07',
+                type: 'vc',
+                desc: '月度VC/PE市场概况、热门赛道和活跃机构排名，红杉、高瓴等头部机构动态'
+            },
+            {
+                file: 'star_market_report_2026-03-07.md',
+                title: '科创板市场深度报告',
+                date: '2026-03-07',
+                type: 'market',
+                desc: '科创板上市公司分析、市值排名和行业分布，中芯国际、金山办公等龙头企业研究'
+            },
+            {
+                file: 'market_report_2026-03-07.md',
+                title: '科创板市场分析报告',
+                date: '2026-03-07',
+                type: 'market',
+                desc: '科创板市场概况和IPO动态，近12个月IPO数量94家，募资总额1,457亿元'
+            },
+            {
+                file: 'policy_digest_2026-03-07.md',
+                title: '科技金融政策周报',
+                date: '2026-03-07',
+                type: 'policy',
+                desc: '本周科技金融相关政策梳理和影响分析，涵盖科技保险、科技成果转化等领域'
+            }
+        ];
+
+        // 生成报告卡片
+        function generateReportCards(filterType = 'all') {
+            const container = document.getElementById('reportCards');
+            const filteredReports = filterType === 'all' 
+                ? reports 
+                : reports.filter(r => r.type === filterType);
+            
+            const typeLabels = {
+                'market': '市场分析',
+                'vc': 'VC/PE研究',
+                'policy': '政策解读'
+            };
+            
+            container.innerHTML = filteredReports.map((report, index) => `
+                <div class="report-card animate-fadeInUp" style="animation-delay: ${index * 0.1}s">
+                    <div class="report-card-header">
+                        <span class="report-type-badge">${typeLabels[report.type]}</span>
+                        <h3 class="report-card-title">${report.title}</h3>
+                    </div>
+                    <div class="report-card-body">
+                        <div class="report-date">
+                            <i class="far fa-calendar-alt"></i>
+                            ${report.date}
+                        </div>
+                        <p class="report-summary">${report.desc}</p>
+                    </div>
+                    <div class="report-card-footer">
+                        <span style="color: #6b7280; font-size: 13px;">
+                            <i class="far fa-file-alt" style="margin-right: 5px;"></i>
+                            深度报告
+                        </span>
+                        <a href="report-viewer.html?file=${report.file}" class="read-more-btn">
+                            阅读报告 <i class="fas fa-arrow-right" style="margin-left: 5px;"></i>
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 筛选报告
+        function filterReports(type) {
+            // 更新按钮状态
+            document.querySelectorAll('.reports-section .filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 重新生成卡片
+            generateReportCards(type);
+        }
+
+        // 绘制VC趋势图
+        function drawVCTrendChart() {
+            const trace = {
+                x: ['2025-09', '2025-10', '2025-11', '2025-12', '2026-01', '2026-02', '2026-03'],
+                y: [520, 580, 610, 590, 620, 635, 650],
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: '投资事件数',
+                line: {
+                    color: '#f97316',
+                    width: 3
+                },
+                marker: {
+                    size: 8,
+                    color: '#f97316'
+                },
+                fill: 'tozeroy',
+                fillcolor: 'rgba(249, 115, 22, 0.1)'
+            };
+
+            const layout = {
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                font: {
+                    color: '#9ca3af'
+                },
+                xaxis: {
+                    gridcolor: 'rgba(255,255,255,0.1)',
+                    zerolinecolor: 'rgba(255,255,255,0.1)'
+                },
+                yaxis: {
+                    gridcolor: 'rgba(255,255,255,0.1)',
+                    zerolinecolor: 'rgba(255,255,255,0.1)',
+                    title: '投资事件数'
+                },
+                margin: { t: 20, r: 20, b: 40, l: 60 },
+                showlegend: false
+            };
+
+            Plotly.newPlot('vcTrendChart', [trace], layout, {responsive: true, displayModeBar: false});
+        }
+
+        // 绘制科创板走势图
+        function drawStarMarketChart() {
+            const trace = {
+                x: ['2025-09', '2025-10', '2025-11', '2025-12', '2026-01', '2026-02', '2026-03'],
+                y: [1150, 1180, 1220, 1190, 1235, 1220, 1245.68],
+                type: 'scatter',
+                mode: 'lines',
+                name: '科创50指数',
+                line: {
+                    color: '#10b981',
+                    width: 3
+                },
+                fill: 'tozeroy',
+                fillcolor: 'rgba(16, 185, 129, 0.1)'
+            };
+
+            const layout = {
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                font: {
+                    color: '#9ca3af'
+                },
+                xaxis: {
+                    gridcolor: 'rgba(255,255,255,0.1)',
+                    zerolinecolor: 'rgba(255,255,255,0.1)'
+                },
+                yaxis: {
+                    gridcolor: 'rgba(255,255,255,0.1)',
+                    zerolinecolor: 'rgba(255,255,255,0.1)',
+                    title: '指数点位'
+                },
+                margin: { t: 20, r: 20, b: 40, l: 60 },
+                showlegend: false
+            };
+
+            Plotly.newPlot('starMarketChart', [trace], layout, {responsive: true, displayModeBar: false});
+        }
+
+        // 切换时间范围
+        function switchTimeRange(range) {
+            document.querySelectorAll('.data-viz-section .filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 这里可以添加切换数据逻辑
+            console.log('切换到时间范围:', range);
+        }
+
+        // 搜索功能
+        function performSearch() {
+            const query = document.getElementById('searchInput').value;
+            if (query.trim()) {
+                window.location.href = `report-viewer.html?search=${encodeURIComponent(query)}`;
+            }
+        }
+
+        // 监听回车键搜索
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // 订阅弹窗
+        function showSubscribeModal() {
+            alert('订阅功能即将上线！\n\n您可以通过以下方式获取更新：\n1. 关注GitHub仓库获取最新代码\n2. 每日访问查看最新报告\n3. 收藏本页面随时查看');
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            generateReportCards();
+            drawVCTrendChart();
+            drawStarMarketChart();
+        });
+    </script>
 </body>
 </html>
