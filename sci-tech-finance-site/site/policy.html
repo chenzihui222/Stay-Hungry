@@ -5,97 +5,597 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>政策解读 - Stay Hungry</title>
     <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .policy-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 48px 24px;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        
+        .page-title {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+        }
+        
+        .update-date {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 15px;
+            padding: 10px 20px;
+            background: rgba(30, 58, 95, 0.06);
+            border-radius: 25px;
+        }
+        
+        .overview-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+        
+        .overview-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+            padding: 32px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 10px 40px -10px rgba(30, 58, 95, 0.3);
+        }
+        
+        .overview-number {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .overview-label {
+            font-size: 15px;
+            opacity: 0.9;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .section-title i {
+            color: var(--secondary-color);
+        }
+        
+        .policies-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+        
+        .policy-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(30, 58, 95, 0.08);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .policy-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px -10px rgba(30, 58, 95, 0.2);
+        }
+        
+        .policy-header-card {
+            background: linear-gradient(135deg, rgba(30, 58, 95, 0.03), rgba(37, 99, 235, 0.05));
+            padding: 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .policy-title-card {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+        
+        .policy-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        
+        .policy-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .policy-meta i {
+            color: var(--secondary-color);
+        }
+        
+        .impact-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+        
+        .impact-high {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        
+        .impact-medium {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        
+        .policy-body {
+            padding: 24px;
+        }
+        
+        .policy-summary {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+        
+        .key-points {
+            margin-bottom: 20px;
+        }
+        
+        .key-points-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .key-points-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .key-point {
+            background: rgba(8, 145, 178, 0.1);
+            color: var(--secondary-color);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .original-content {
+            background: #f8fafc;
+            border-left: 3px solid var(--secondary-color);
+            padding: 16px;
+            margin-top: 16px;
+            border-radius: 0 8px 8px 0;
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-color);
+            display: none;
+        }
+        
+        .original-content.show {
+            display: block;
+        }
+        
+        .toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            border-radius: 6px;
+            color: var(--primary-color);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 12px;
+        }
+        
+        .toggle-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .policy-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            background: var(--secondary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .policy-link:hover {
+            background: #047481;
+        }
+        
+        .stats-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(30, 58, 95, 0.08);
+            padding: 32px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .stats-table th {
+            background: var(--primary-color);
+            color: white;
+            padding: 14px 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .stats-table td {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+        
+        .stats-table tr:hover td {
+            background: rgba(30, 58, 95, 0.02);
+        }
+        
+        .category-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .cat-finance { background: #dbeafe; color: #1d4ed8; }
+        .cat-fintech { background: #d1fae5; color: #059669; }
+        .cat-vc { background: #fce7f3; color: #db2777; }
+        .cat-market { background: #fef3c7; color: #d97706; }
+        .cat-ip { background: #ede9fe; color: #7c3aed; }
+        
+        @media (max-width: 768px) {
+            .policy-container {
+                padding: 24px 16px;
+            }
+            
+            .page-title {
+                font-size: 28px;
+            }
+            
+            .overview-cards {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .overview-number {
+                font-size: 36px;
+            }
+            
+            .policies-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .policy-header-card {
+                padding: 20px;
+            }
+            
+            .policy-title-card {
+                font-size: 16px;
+            }
+            
+            .policy-body {
+                padding: 20px;
+            }
+            
+            .stats-section {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header style="position: relative;">
+    <header>
         <div class="container">
-            <h1>Stay Hungry</h1>
-            <p class="tagline">聚焦中国科技创新金融的独立学习研究平台</p>
-            <nav>
-                <ul>
-                    <li><a href="index.html" class="">首页</a></li>
-                    <li><a href="star-market.html" class="">科创板</a></li>
-                    <li><a href="vcpe.html" class="">VC/PE</a></li>
-                    <li><a href="policy.html" class="active">政策解读</a></li>
-                    <li><a href="report-viewer.html" class="">研究报告</a></li>
-                    <li><a href="research.html" class="">研究笔记</a></li>
-                    <li><a href="features.html" class="">功能介绍</a></li>
-                </ul>
-            </nav>
-        </div>
-        <div class="user-section" style="position: absolute; top: var(--spacing-md); right: var(--spacing-md);">
-            <a href="research.html" class="github-login-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: var(--spacing-xs); padding: 10px var(--spacing-md); background: linear-gradient(135deg, #24292e, #586069); color: white; border-radius: 8px; font-size: 14px; font-weight: 600;">
-                <svg viewBox="0 0 16 16" fill="currentColor" style="width: 20px; height: 20px; vertical-align: middle;">
-                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-                </svg>
-                登录
-            </a>
+            <div class="header-content">
+                <div class="brand">
+                    <h1>Stay Hungry</h1>
+                    <p class="tagline">聚焦中国科技创新金融的独立学习研究平台</p>
+                </div>
+                <button class="hamburger" id="hamburgerBtn" aria-label="菜单">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <nav id="mainNav">
+                    <ul>
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="star-market.html">科创板</a></li>
+                        <li><a href="vcpe.html">VC/PE</a></li>
+                        <li><a href="policy.html" class="active">政策解读</a></li>
+                        <li><a href="report-viewer.html">研究报告</a></li>
+                        <li><a href="research.html">研究笔记</a></li>
+                        <li><a href="features.html">功能介绍</a></li>
+                    </ul>
+                </nav>
+            </div>
         </div>
     </header>
 
-    <main class="container">
-        <h2>科技金融政策解读</h2>
-        <p class="update-time">更新日期: 2026-03-07</p>
-        
-        <section class="policy-content">
-            <div class="markdown-content">
-                <pre># 科技金融政策周报
-**报告日期**: 2026-03-07
-**统计周期**: 近30天
----
-## 概览
-本周共监测到 **5** 项科技金融相关政策，其中高影响政策 **3** 项。
-## 重点政策
-### 关于支持科技型企业融资的指导意见
-- **来源**: 国务院
-- **发布时间**: 2026-03-02
-- **类别**: 融资支持
-- **影响等级**: 高
-- **摘要**: 支持符合条件的科技型企业上市融资，完善科技金融支持体系
-- **关键要点**: 扩大直接融资, 完善退出机制, 加强风险控制
-
-### 金融科技发展规划（2024-2028年）
-- **来源**: 人民银行
-- **发布时间**: 2026-02-27
-- **类别**: 金融科技
-- **影响等级**: 高
-- **摘要**: 推动金融科技赋能，提升金融服务实体经济能力
-- **关键要点**: 数字化转型, 风险管理, 普惠金融
-
-### 促进创业投资持续健康发展的若干政策
-- **来源**: 发改委
-- **发布时间**: 2026-02-15
-- **类别**: 创投支持
-- **影响等级**: 高
-- **摘要**: 鼓励创投机构投早投小投科技
-- **关键要点**: 税收优惠, 退出渠道, 长期投资
-
-## 政策分类统计
-| 类别 | 数量 |
-|------|------|
-| 融资支持 | 1 |
-| 金融科技 | 1 |
-| 市场监管 | 1 |
-| 知识产权 | 1 |
-| 创投支持 | 1 |
-</pre>
+    <main class="policy-container">
+        <div class="page-header">
+            <h1 class="page-title">科技金融政策解读</h1>
+            <div class="update-date">
+                <i class="far fa-calendar-alt"></i>
+                更新日期: 2026-03-08
             </div>
-        </section>
+        </div>
         
-        <section class="policy-archive">
-            <h3>历史政策周报</h3>
-            <ul class="archive-list">
-                <li><a href="reports/policy_digest_2026-03-07.md">政策周报 - 2026-03-07</a></li>
-            </ul>
-        </section>
+        <div class="overview-cards">
+            <div class="overview-card">
+                <span class="overview-number">8</span>
+                <span class="overview-label">本周监测政策总数</span>
+            </div>
+            <div class="overview-card">
+                <span class="overview-number">5</span>
+                <span class="overview-label">高影响政策数量</span>
+            </div>
+            <div class="overview-card">
+                <span class="overview-number">3</span>
+                <span class="overview-label">重点关注领域</span>
+            </div>
+        </div>
+        
+        <h2 class="section-title">
+            <i class="fas fa-bullhorn"></i>
+            重点政策
+        </h2>
+        
+        <div class="policies-grid">
+            <div class="policy-card">
+                <div class="policy-header-card">
+                    <div class="policy-title-card">关于加快推动科技保险高质量发展 有力支撑高水平科技自立自强的若干意见</div>
+                    <div class="policy-meta">
+                        <span><i class="fas fa-building"></i> 科技部等四部门</span>
+                        <span><i class="fas fa-calendar"></i> 2026-03-02</span>
+                    </div>
+                    <span class="impact-badge impact-high">
+                        <i class="fas fa-exclamation-circle"></i> 高影响
+                    </span>
+                </div>
+                <div class="policy-body">
+                    <p class="policy-summary">建立多层次的科技保险产品体系，覆盖科技企业全生命周期，完善科技保险风险分散机制，提升保险服务能力，推动科技保险与科技创新深度融合。</p>
+                    <div class="key-points">
+                        <div class="key-points-title">关键要点</div>
+                        <div class="key-points-list">
+                            <span class="key-point">多层次保险体系</span>
+                            <span class="key-point">风险分散机制</span>
+                            <span class="key-point">科技深度融合</span>
+                            <span class="key-point">基础设施完善</span>
+                        </div>
+                    </div>
+                    <button class="toggle-btn" onclick="toggleContent(this)">
+                        <i class="fas fa-file-alt"></i>
+                        <span>查看原文</span>
+                    </button>
+                    <a href="https://www.most.gov.cn/" target="_blank" class="policy-link">
+                        <i class="fas fa-external-link-alt"></i>
+                        访问官网
+                    </a>
+                    <div class="original-content">
+                        政策原文内容：建立多层次的科技保险产品体系，覆盖科技企业全生命周期。完善科技保险风险分散机制，提升保险服务能力。加强科技保险基础设施建设，培育专业化的科技保险市场。到2030年，基本建成与高水平科技自立自强目标相适应的科技保险体系。
+                    </div>
+                </div>
+            </div>
+            
+            <div class="policy-card">
+                <div class="policy-header-card">
+                    <div class="policy-title-card">关于支持科技型企业融资的指导意见</div>
+                    <div class="policy-meta">
+                        <span><i class="fas fa-building"></i> 国务院</span>
+                        <span><i class="fas fa-calendar"></i> 2026-03-02</span>
+                    </div>
+                    <span class="impact-badge impact-high">
+                        <i class="fas fa-exclamation-circle"></i> 高影响
+                    </span>
+                </div>
+                <div class="policy-body">
+                    <p class="policy-summary">支持符合条件的科技型企业上市融资，完善科技金融支持体系，鼓励金融机构加大对科技创新企业的信贷支持力度。</p>
+                    <div class="key-points">
+                        <div class="key-points-title">关键要点</div>
+                        <div class="key-points-list">
+                            <span class="key-point">扩大直接融资</span>
+                            <span class="key-point">完善退出机制</span>
+                            <span class="key-point">加强风险控制</span>
+                        </div>
+                    </div>
+                    <button class="toggle-btn" onclick="toggleContent(this)">
+                        <i class="fas fa-file-alt"></i>
+                        <span>查看原文</span>
+                    </button>
+                    <a href="http://www.gov.cn/" target="_blank" class="policy-link">
+                        <i class="fas fa-external-link-alt"></i>
+                        访问官网
+                    </a>
+                    <div class="original-content">
+                        政策原文内容：支持符合条件的科技型企业上市融资，完善科技金融支持体系。鼓励金融机构加大对科技创新企业的信贷支持力度，优化信贷审批流程。完善科技企业退出机制，建立多层次资本市场体系。
+                    </div>
+                </div>
+            </div>
+            
+            <div class="policy-card">
+                <div class="policy-header-card">
+                    <div class="policy-title-card">促进创业投资持续健康发展的若干政策</div>
+                    <div class="policy-meta">
+                        <span><i class="fas fa-building"></i> 发改委</span>
+                        <span><i class="fas fa-calendar"></i> 2026-02-15</span>
+                    </div>
+                    <span class="impact-badge impact-high">
+                        <i class="fas fa-exclamation-circle"></i> 高影响
+                    </span>
+                </div>
+                <div class="policy-body">
+                    <p class="policy-summary">鼓励创投机构投早投小投科技，完善创业投资退出机制，落实创业投资税收优惠政策，支持创业投资健康发展。</p>
+                    <div class="key-points">
+                        <div class="key-points-title">关键要点</div>
+                        <div class="key-points-list">
+                            <span class="key-point">税收优惠</span>
+                            <span class="key-point">退出渠道</span>
+                            <span class="key-point">长期投资</span>
+                        </div>
+                    </div>
+                    <button class="toggle-btn" onclick="toggleContent(this)">
+                        <i class="fas fa-file-alt"></i>
+                        <span>查看原文</span>
+                    </button>
+                    <a href="https://www.ndrc.gov.cn/" target="_blank" class="policy-link">
+                        <i class="fas fa-external-link-alt"></i>
+                        访问官网
+                    </a>
+                    <div class="original-content">
+                        政策原文内容：鼓励创投机构投早投小投科技，支持种子期、初创期科技企业发展。完善创业投资退出机制，拓宽退出渠道。落实创业投资税收优惠政策，营造有利于创业投资发展的良好环境。
+                    </div>
+                </div>
+            </div>
+            
+            <div class="policy-card">
+                <div class="policy-header-card">
+                    <div class="policy-title-card">金融科技发展规划（2024-2028年）</div>
+                    <div class="policy-meta">
+                        <span><i class="fas fa-building"></i> 人民银行</span>
+                        <span><i class="fas fa-calendar"></i> 2026-02-27</span>
+                    </div>
+                    <span class="impact-badge impact-high">
+                        <i class="fas fa-exclamation-circle"></i> 高影响
+                    </span>
+                </div>
+                <div class="policy-body">
+                    <p class="policy-summary">推动金融科技赋能，提升金融服务实体经济能力，加快金融机构数字化转型，完善金融科技监管体系。</p>
+                    <div class="key-points">
+                        <div class="key-points-title">关键要点</div>
+                        <div class="key-points-list">
+                            <span class="key-point">数字化转型</span>
+                            <span class="key-point">风险管理</span>
+                            <span class="key-point">普惠金融</span>
+                        </div>
+                    </div>
+                    <button class="toggle-btn" onclick="toggleContent(this)">
+                        <i class="fas fa-file-alt"></i>
+                        <span>查看原文</span>
+                    </button>
+                    <a href="http://www.pbc.gov.cn/" target="_blank" class="policy-link">
+                        <i class="fas fa-external-link-alt"></i>
+                        访问官网
+                    </a>
+                    <div class="original-content">
+                        政策原文内容：推动金融科技赋能，提升金融服务实体经济能力。加快金融机构数字化转型，提升智能化水平。完善金融科技监管体系，防范金融风险。推进普惠金融发展，提升金融服务覆盖面。
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h2 class="section-title">
+            <i class="fas fa-chart-pie"></i>
+            政策分类统计
+        </h2>
+        
+        <div class="stats-section">
+            <table class="stats-table">
+                <thead>
+                    <tr>
+                        <th>类别</th>
+                        <th>数量</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="category-tag cat-finance">融资支持</span></td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td><span class="category-tag cat-fintech">金融科技</span></td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td><span class="category-tag cat-vc">创投支持</span></td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td><span class="category-tag cat-market">市场监管</span></td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td><span class="category-tag cat-ip">知识产权</span></td>
+                        <td>1</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </main>
 
     <footer>
         <div class="container">
             <p>&copy; 2026 Stay Hungry | 数据仅供研究参考</p>
             <p>Stay hungry, stay foolish. 保持饥饿，保持愚蠢。</p>
-            <p>自动更新于 2026-03-07 16:44:42</p>
         </div>
     </footer>
+
+    <script>
+        // 汉堡菜单
+        document.getElementById('hamburgerBtn').addEventListener('click', function() {
+            this.classList.toggle('active');
+            document.getElementById('mainNav').classList.toggle('active');
+        });
+        
+        // 切换原文内容显示
+        function toggleContent(btn) {
+            const content = btn.parentElement.querySelector('.original-content');
+            const span = btn.querySelector('span');
+            
+            if (content.classList.contains('show')) {
+                content.classList.remove('show');
+                span.textContent = '查看原文';
+            } else {
+                content.classList.add('show');
+                span.textContent = '收起原文';
+            }
+        }
+    </script>
 </body>
 </html>
