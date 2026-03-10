@@ -4,968 +4,406 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <title>Stay Hungry - 中国科技创新金融研究平台</title>
+    <title>科技金融数据平台 - Dashboard</title>
     <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="static/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* ==================== Hero区域 ==================== */
-        .hero {
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1e40af 100%);
-            min-height: 85vh;
-            display: flex;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-            padding: var(--spacing-xl) 0;
-        }
-        
-        /* 科技网格背景 */
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            pointer-events: none;
-        }
-        
-        /* 光晕效果 */
-        .hero::after {
-            content: '';
-            position: absolute;
-            top: 20%;
-            right: 10%;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(37, 99, 235, 0.3) 0%, transparent 70%);
-            pointer-events: none;
-        }
-        
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 800px;
-        }
-        
-        .hero h2 {
-            color: white;
-            font-size: 52px;
-            font-weight: 800;
-            margin-bottom: var(--spacing-md);
-            line-height: 1.2;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        .hero-subtitle {
-            color: rgba(255,255,255,0.9);
-            font-size: 20px;
-            margin-bottom: var(--spacing-xl);
-            line-height: 1.6;
-            max-width: 600px;
-        }
-        
-        .hero-actions {
-            display: flex;
-            gap: var(--spacing-md);
-            flex-wrap: wrap;
-        }
-        
-        .hero-btn-primary {
-            padding: 16px 36px;
-            background: white;
-            color: var(--primary-color);
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        
-        .hero-btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-        }
-        
-        .hero-btn-secondary {
-            padding: 16px 36px;
-            background: transparent;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 16px;
-            border: 2px solid rgba(255,255,255,0.5);
-            transition: all 0.3s ease;
-        }
-        
-        .hero-btn-secondary:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: white;
-        }
-        
-        .hero-stats {
-            display: flex;
-            gap: var(--spacing-xl);
-            margin-top: var(--spacing-xl);
-            padding-top: var(--spacing-lg);
-            border-top: 1px solid rgba(255,255,255,0.2);
-        }
-        
-        .hero-stat {
-            text-align: center;
-        }
-        
-        .hero-stat-value {
-            font-size: 32px;
-            font-weight: 800;
-            color: white;
-            display: block;
-        }
-        
-        .hero-stat-label {
-            font-size: 14px;
-            color: rgba(255,255,255,0.7);
-        }
-        
-        /* ==================== 核心数据快览 ==================== */
-        .metrics-section {
-            padding: var(--spacing-xl) 0;
-            background: var(--bg-color);
-        }
-        
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--spacing-lg);
-        }
-        
-        .section-title {
-            font-size: 32px;
-            color: var(--text-color);
-            margin-bottom: 0;
-            position: relative;
-            padding-bottom: var(--spacing-sm);
-        }
-        
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 60px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            border-radius: 2px;
-        }
-        
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: var(--spacing-md);
-        }
-        
-        .metric-card {
-            background: var(--card-bg);
-            padding: var(--spacing-md);
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            text-align: center;
-        }
-        
-        .metric-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 20px -5px rgba(30, 58, 95, 0.1);
-            border-color: var(--secondary-color);
-        }
-        
-        .metric-card.active {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(30, 58, 95, 0.1);
-        }
-        
-        .metric-icon {
-            font-size: 28px;
-            color: var(--secondary-color);
-            margin-bottom: var(--spacing-sm);
-        }
-        
-        .metric-value {
-            font-size: 36px;
-            font-weight: 800;
-            color: var(--primary-color);
-            margin-bottom: var(--spacing-xs);
-        }
-        
-        .metric-label {
-            font-size: 14px;
-            color: var(--text-muted);
-            margin-bottom: var(--spacing-xs);
-        }
-        
-        .metric-change {
-            font-size: 13px;
-            font-weight: 600;
-        }
-        
-        .metric-change.positive {
-            color: #10b981;
-        }
-        
-        .metric-change.negative {
-            color: #ef4444;
-        }
-        
-        /* ==================== 最新研究报告 ==================== */
-        .reports-section {
-            padding: var(--spacing-xl) 0;
-            background: white;
-        }
-        
-        .reports-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: var(--spacing-md);
-        }
-        
-        .report-card {
-            background: var(--card-bg);
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .report-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 20px -5px rgba(30, 58, 95, 0.1);
-        }
-        
-        .report-card-header {
-            padding: var(--spacing-sm) var(--spacing-md);
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-            color: white;
-        }
-        
-        .report-type-badge {
-            display: inline-block;
-            padding: 2px 10px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            background: rgba(255,255,255,0.2);
-            margin-bottom: 8px;
-        }
-        
-        .report-card-title {
-            font-size: 16px;
-            margin: 0;
-            line-height: 1.4;
-            font-weight: 600;
-            color: white;
-        }
-        
-        .report-card-body {
-            padding: var(--spacing-md);
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .report-date {
-            color: var(--text-muted);
-            font-size: 13px;
-            margin-bottom: var(--spacing-sm);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .report-summary {
-            color: var(--text-secondary);
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: var(--spacing-md);
-            flex: 1;
-        }
-        
-        .report-card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: var(--spacing-sm);
-            border-top: 1px solid var(--border-light);
-        }
-        
-        .read-more-btn {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-        
-        .read-more-btn:hover {
-            color: var(--secondary-color);
-        }
-        
-        .view-all-btn {
-            padding: 10px 24px;
-            background: var(--primary-color);
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-        
-        .view-all-btn:hover {
-            background: var(--primary-dark);
-            transform: translateX(3px);
-        }
-        
-        /* ==================== 特色分析入口 ==================== */
-        .features-section {
-            padding: var(--spacing-xl) 0;
-            background: var(--bg-color);
-        }
-        
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: var(--spacing-md);
-        }
-        
-        .feature-card {
-            background: var(--card-bg);
-            padding: var(--spacing-md);
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 20px -5px rgba(30, 58, 95, 0.1);
-            border-color: var(--secondary-color);
-        }
-        
-        .feature-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto var(--spacing-md);
-            font-size: 28px;
-            color: white;
-        }
-        
-        .feature-card h3 {
-            font-size: 18px;
-            color: var(--primary-color);
-            margin-bottom: var(--spacing-sm);
-        }
-        
-        .feature-card p {
-            color: var(--text-secondary);
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: var(--spacing-md);
-        }
-        
-        .feature-link {
-            color: var(--secondary-color);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-        }
-        
-        .feature-link:hover {
-            text-decoration: underline;
-        }
-        
-        /* ==================== CTA区域 ==================== */
-        .cta-section {
-            padding: var(--spacing-xl) 0;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .cta-section::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            pointer-events: none;
-        }
-        
-        .cta-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: var(--spacing-xl);
-            position: relative;
-            z-index: 2;
-        }
-        
-        .cta-text {
-            flex: 1;
-        }
-        
-        .cta-text h2 {
-            color: white;
-            font-size: 36px;
-            margin-bottom: var(--spacing-sm);
-        }
-        
-        .cta-text p {
-            color: rgba(255,255,255,0.9);
-            font-size: 18px;
-            margin: 0;
-        }
-        
-        .cta-actions {
-            display: flex;
-            gap: var(--spacing-md);
-        }
-        
-        .cta-btn {
-            padding: 16px 32px;
-            background: white;
-            color: var(--primary-color);
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        
-        .cta-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-        }
-        
-        .cta-btn-outline {
-            padding: 16px 32px;
-            background: transparent;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 16px;
-            border: 2px solid rgba(255,255,255,0.5);
-            transition: all 0.3s ease;
-        }
-        
-        .cta-btn-outline:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: white;
-        }
-        
-        /* ==================== 筛选器 ==================== */
-        .filter-bar {
-            display: flex;
-            gap: var(--spacing-xs);
-            margin-bottom: var(--spacing-lg);
-            flex-wrap: wrap;
-        }
-        
-        .filter-btn {
-            padding: 8px 18px;
-            border: 1px solid var(--border-color);
-            background: white;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-secondary);
-        }
-        
-        .filter-btn:hover,
-        .filter-btn.active {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-            color: white;
-        }
-        
-        /* ==================== 动画 ==================== */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .animate-fadeInUp {
-            animation: fadeInUp 0.6s ease forwards;
-        }
-        
-        /* ==================== 响应式样式 ==================== */
-        @media (max-width: 1199px) {
-            .hero h2 {
-                font-size: 44px;
-            }
-            
-            .metrics-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .reports-grid,
-            .features-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        
-        @media (max-width: 767px) {
-            .hero {
-                min-height: auto;
-                padding: var(--spacing-xl) 0;
-            }
-            
-            .hero h2 {
-                font-size: 32px;
-            }
-            
-            .hero-subtitle {
-                font-size: 16px;
-            }
-            
-            .hero-actions {
-                flex-direction: column;
-            }
-            
-            .hero-btn-primary,
-            .hero-btn-secondary {
-                text-align: center;
-            }
-            
-            .hero-stats {
-                flex-wrap: wrap;
-                gap: var(--spacing-md);
-            }
-            
-            .section-title {
-                font-size: 24px;
-            }
-            
-            .section-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: var(--spacing-sm);
-            }
-            
-            .metrics-grid,
-            .reports-grid,
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .cta-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .cta-text h2 {
-                font-size: 28px;
-            }
-            
-            .cta-actions {
-                flex-direction: column;
-                width: 100%;
-            }
-            
-            .cta-btn,
-            .cta-btn-outline {
-                text-align: center;
-            }
-        }
-    </style>
 </head>
-<body>
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="brand">
-                    <h1>Stay Hungry</h1>
-                    <p class="tagline">聚焦中国科技创新金融的独立学习研究平台</p>
-                </div>
-                <button class="hamburger" id="hamburgerBtn" aria-label="菜单">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-                <nav id="mainNav">
-                    <ul>
-                        <li><a href="index.html" class="active">首页</a></li>
-                        <li><a href="star-market.html">科创板</a></li>
-                        <li><a href="vcpe.html">VC/PE</a></li>
-                        <li><a href="policy.html">政策解读</a></li>
-                        <li><a href="report-viewer.html">研究报告</a></li>
-                        <li><a href="research.html">研究笔记</a></li>
-                        <li><a href="features.html">功能介绍</a></li>
-                    </ul>
-                </nav>
+<body class="dashboard-body">
+    
+    <!-- 顶部导航 -->
+    <header class="dashboard-header">
+        <div class="header-brand">
+            <i class="fas fa-chart-line brand-icon"></i>
+            <div class="brand-text">
+                <h1>科技金融数据平台</h1>
+                <span class="brand-subtitle">Sci-Tech Finance Data Platform</span>
+            </div>
+        </div>
+        
+        <div class="header-actions">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="搜索股票、机构、政策...">
+            </div>
+            <button class="action-btn" title="通知">
+                <i class="fas fa-bell"></i>
+                <span class="badge-count">3</span>
+            </button>
+            <div class="user-profile">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user" alt="用户">
             </div>
         </div>
     </header>
 
-    <!-- Hero区域 -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <h2>洞察科技创新<br>把握投资先机</h2>
-                <p class="hero-subtitle">专注中国科技创新金融研究，提供科创板、VC/PE、政策解读等深度分析与数据洞察，助力投资决策。</p>
-                <div class="hero-actions">
-                    <a href="report-viewer.html" class="hero-btn-primary">
-                        <i class="fas fa-search"></i> 探索研究报告
-                    </a>
-                    <a href="#features" class="hero-btn-secondary">
-                        <i class="fas fa-chart-line"></i> 了解功能特色
-                    </a>
-                </div>
-                <div class="hero-stats">
-                    <div class="hero-stat">
-                        <span class="hero-stat-value">500+</span>
-                        <span class="hero-stat-label">研究报告</span>
-                    </div>
-                    <div class="hero-stat">
-                        <span class="hero-stat-value">50K+</span>
-                        <span class="hero-stat-label">数据条目</span>
-                    </div>
-                    <div class="hero-stat">
-                        <span class="hero-stat-value">每日</span>
-                        <span class="hero-stat-label">自动更新</span>
-                    </div>
-                </div>
-            </div>
+    <!-- 主导航 -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-item active">
+                <i class="fas fa-th-large"></i>
+                <span>数据大屏</span>
+            </a>
+            <a href="star-market.html" class="nav-item">
+                <i class="fas fa-rocket"></i>
+                <span>科创板</span>
+            </a>
+            <a href="vcpe.html" class="nav-item">
+                <i class="fas fa-hand-holding-usd"></i>
+                <span>VC/PE</span>
+            </a>
+            <a href="policy.html" class="nav-item">
+                <i class="fas fa-file-alt"></i>
+                <span>政策解读</span>
+            </a>
+            <a href="report-viewer.html" class="nav-item">
+                <i class="fas fa-book-open"></i>
+                <span>研究报告</span>
+            </a>
+            <a href="research.html" class="nav-item">
+                <i class="fas fa-pen-fancy"></i>
+                <span>研究笔记</span>
+            </a>
+            <a href="features.html" class="nav-item">
+                <i class="fas fa-cube"></i>
+                <span>功能介绍</span>
+            </a>
         </div>
-    </section>
+    </nav>
 
-    <!-- 核心数据快览 -->
-    <section class="metrics-section" id="metrics">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">核心数据快览</h2>
-                <span class="update-time">
-                    <i class="fas fa-sync-alt"></i> 数据更新于 2026-03-08
-                </span>
-            </div>
-            <div class="metrics-grid">
-                <div class="metric-card active" data-metric="vc">
-                    <div class="metric-icon">
-                        <i class="fas fa-hand-holding-usd"></i>
-                    </div>
-                    <div class="metric-value">650</div>
-                    <div class="metric-label">本月VC投资事件</div>
-                    <div class="metric-change positive">
-                        <i class="fas fa-arrow-up"></i> 12.5% 同比
-                    </div>
-                </div>
-                <div class="metric-card" data-metric="amount">
-                    <div class="metric-icon">
-                        <i class="fas fa-dollar-sign"></i>
-                    </div>
-                    <div class="metric-value">18.5亿</div>
-                    <div class="metric-label">VC投资总额(美元)</div>
-                    <div class="metric-change positive">
-                        <i class="fas fa-arrow-up"></i> 8.3% 环比
-                    </div>
-                </div>
-                <div class="metric-card" data-metric="index">
-                    <div class="metric-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <div class="metric-value">1,245.68</div>
-                    <div class="metric-label">科创50指数</div>
-                    <div class="metric-change positive">
-                        <i class="fas fa-arrow-up"></i> 1.25% 今日
-                    </div>
-                </div>
-                <div class="metric-card" data-metric="market">
-                    <div class="metric-icon">
-                        <i class="fas fa-building"></i>
-                    </div>
-                    <div class="metric-value">20,222亿</div>
-                    <div class="metric-label">科创板总市值</div>
-                    <div class="metric-change positive">
-                        <i class="fas fa-arrow-up"></i> 3.2% 今日
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 最新研究报告 -->
-    <section class="reports-section" id="reports">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">最新研究报告</h2>
-                <a href="report-viewer.html" class="view-all-btn">查看全部 →</a>
-            </div>
-            
-            <div class="filter-bar">
-                <button class="filter-btn active" data-filter="all">全部</button>
-                <button class="filter-btn" data-filter="market">市场分析</button>
-                <button class="filter-btn" data-filter="vc">VC/PE研究</button>
-                <button class="filter-btn" data-filter="policy">政策解读</button>
-            </div>
-
-            <div class="reports-grid" id="reportsGrid">
-                <!-- 报告卡片将通过JavaScript动态生成 -->
-            </div>
-        </div>
-    </section>
-
-    <!-- 特色分析入口 -->
-    <section class="features-section" id="features">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">特色分析入口</h2>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card animate-fadeInUp">
-                    <div class="feature-icon">
+    <!-- 主内容区 -->
+    <main class="dashboard-main">
+        
+        <!-- 1. KPI 指标卡片 -->
+        <section class="kpi-section">
+            <div class="kpi-grid">
+                
+                <!-- 科创板卡片 -->
+                <div class="kpi-card kpi-primary" onclick="window.location.href='star-market.html'">
+                    <div class="kpi-bg-icon">
                         <i class="fas fa-rocket"></i>
                     </div>
-                    <h3>科创板深度分析</h3>
-                    <p>实时追踪科创板企业动态，IPO数据、市值排名、行业分布全方位分析</p>
-                    <a href="star-market.html" class="feature-link">查看分析 →</a>
-                </div>
-                <div class="feature-card animate-fadeInUp" style="animation-delay: 0.1s">
-                    <div class="feature-icon">
-                        <i class="fas fa-handshake"></i>
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrapper">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <span class="kpi-label">科创板</span>
                     </div>
-                    <h3>VC/PE投资追踪</h3>
-                    <p>监控风险投资市场动向，热门赛道、活跃机构、投融资事件实时更新</p>
-                    <a href="vcpe.html" class="feature-link">查看追踪 →</a>
-                </div>
-                <div class="feature-card animate-fadeInUp" style="animation-delay: 0.2s">
-                    <div class="feature-icon">
-                        <i class="fas fa-file-contract"></i>
+                    <div class="kpi-body">
+                        <div class="kpi-main">
+                            <span class="kpi-value" data-target="586">0</span>
+                            <span class="kpi-unit">家上市公司</span>
+                        </div>
+                        <div class="kpi-stats">
+                            <div class="stat-item">
+                                <span class="stat-value">8.24万亿</span>
+                                <span class="stat-label">总市值</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">67家</span>
+                                <span class="stat-label">年度IPO</span>
+                            </div>
+                        </div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+12.5% 同比增长</span>
+                        </div>
                     </div>
-                    <h3>政策解读专栏</h3>
-                    <p>深度解析科技金融政策，行业影响、投资机会、风险评估全面覆盖</p>
-                    <a href="policy.html" class="feature-link">查看解读 →</a>
                 </div>
-                <div class="feature-card animate-fadeInUp" style="animation-delay: 0.3s">
-                    <div class="feature-icon">
-                        <i class="fas fa-brain"></i>
+
+                <!-- VC/PE卡片 -->
+                <div class="kpi-card kpi-success" onclick="window.location.href='vcpe.html'">
+                    <div class="kpi-bg-icon">
+                        <i class="fas fa-hand-holding-usd"></i>
                     </div>
-                    <h3>AI智能分析</h3>
-                    <p>基于大语言模型的智能报告生成，自动化数据分析和趋势预测</p>
-                    <a href="features.html" class="feature-link">了解详情 →</a>
-                </div>
-                <div class="feature-card animate-fadeInUp" style="animation-delay: 0.4s">
-                    <div class="feature-icon">
-                        <i class="fas fa-database"></i>
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrapper">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <span class="kpi-label">VC/PE融资</span>
                     </div>
-                    <h3>数据可视化</h3>
-                    <p>Interactive图表展示，支持多维度数据筛选和自定义时间范围</p>
-                    <a href="features.html" class="feature-link">探索数据 →</a>
+                    <div class="kpi-body">
+                        <div class="kpi-main">
+                            <span class="kpi-value" data-target="328">0</span>
+                            <span class="kpi-unit">本月融资事件</span>
+                        </div>
+                        <div class="kpi-stats">
+                            <div class="stat-item">
+                                <span class="stat-value">¥156.8亿</span>
+                                <span class="stat-label">AI赛道</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">423.5亿</span>
+                                <span class="stat-label">总融资额</span>
+                            </div>
+                        </div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+8.3% 环比增长</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="feature-card animate-fadeInUp" style="animation-delay: 0.5s">
-                    <div class="feature-icon">
+
+                <!-- 政策卡片 -->
+                <div class="kpi-card kpi-warning" onclick="window.location.href='policy.html'">
+                    <div class="kpi-bg-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrapper">
+                            <i class="fas fa-gavel"></i>
+                        </div>
+                        <span class="kpi-label">科技金融政策</span>
+                    </div>
+                    <div class="kpi-body">
+                        <div class="kpi-main">
+                            <span class="kpi-value" data-target="12">0</span>
+                            <span class="kpi-unit">本月新政策</span>
+                        </div>
+                        <div class="kpi-stats">
+                            <div class="stat-item">
+                                <span class="stat-value highlight">3条</span>
+                                <span class="stat-label">国家级</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">9条</span>
+                                <span class="stat-label">地方级</span>
+                            </div>
+                        </div>
+                        <div class="kpi-trend neutral">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>5条高影响政策待解读</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 研究卡片 -->
+                <div class="kpi-card kpi-info" onclick="window.location.href='report-viewer.html'">
+                    <div class="kpi-bg-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrapper">
+                            <i class="fas fa-microscope"></i>
+                        </div>
+                        <span class="kpi-label">研究中心</span>
+                    </div>
+                    <div class="kpi-body">
+                        <div class="kpi-main">
+                            <span class="kpi-value" data-target="45">0</span>
+                            <span class="kpi-unit">本月新发布</span>
+                        </div>
+                        <div class="kpi-stats">
+                            <div class="stat-item">
+                                <span class="stat-value">28篇</span>
+                                <span class="stat-label">深度报告</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">17篇</span>
+                                <span class="stat-label">研究笔记</span>
+                            </div>
+                        </div>
+                        <div class="kpi-trend up">
+                            <i class="fas fa-fire"></i>
+                            <span>AI赛道研究报告热门</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. 图表区 -->
+        <section class="charts-section">
+            <div class="charts-grid">
+                
+                <!-- 科创板IPO趋势 -->
+                <div class="chart-card chart-large">
+                    <div class="chart-header">
+                        <div class="chart-title-group">
+                            <h3><i class="fas fa-chart-area"></i> 科创板IPO年度趋势</h3>
+                            <span class="chart-subtitle">2022-2026年IPO数量与募资规模</span>
+                        </div>
+                        <div class="chart-actions">
+                            <button class="chart-filter active" data-filter="count">IPO数量</button>
+                            <button class="chart-filter" data-filter="amount">募资额</button>
+                            <div class="time-range">
+                                <button class="btn-sm active">近1年</button>
+                                <button class="btn-sm">近3年</button>
+                                <button class="btn-sm">全部</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <div id="ipoTrendChart" class="chart-container"></div>
+                    </div>
+                </div>
+
+                <!-- VC/PE月度融资 -->
+                <div class="chart-card chart-large">
+                    <div class="chart-header">
+                        <div class="chart-title-group">
+                            <h3><i class="fas fa-chart-bar"></i> VC/PE月度融资趋势</h3>
+                            <span class="chart-subtitle">近6个月融资事件与金额统计</span>
+                        </div>
+                        <div class="chart-actions">
+                            <button class="chart-filter active" data-filter="amount">融资金额</button>
+                            <button class="chart-filter" data-filter="deals">事件数量</button>
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="vcMonthlyChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- AI赛道融资分布 -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title-group">
+                            <h3><i class="fas fa-chart-pie"></i> AI赛道融资占比</h3>
+                            <span class="chart-subtitle">本月AI细分赛道融资分布</span>
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="aiSectorChart"></canvas>
+                        <div class="chart-legend" id="aiSectorLegend"></div>
+                    </div>
+                </div>
+
+                <!-- 政策分类统计 -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title-group">
+                            <h3><i class="fas fa-align-left"></i> 政策分类统计</h3>
+                            <span class="chart-subtitle">本月政策按领域分类</span>
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <div id="policyCategoryChart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 数据列表区 -->
+        <section class="lists-section">
+            <div class="lists-grid">
+                
+                <!-- 活跃投资机构 -->
+                <div class="list-card">
+                    <div class="list-header">
+                        <div class="list-title-group">
+                            <h3><i class="fas fa-trophy"></i> 活跃投资机构 TOP5</h3>
+                            <span class="list-subtitle">本月投资事件数排名</span>
+                        </div>
+                        <a href="vcpe.html" class="view-all">
+                            查看全部 <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="list-body">
+                        <div class="investor-list" id="topInvestorsList">
+                            <!-- JS动态生成 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 最新动态 -->
+                <div class="list-card">
+                    <div class="list-header">
+                        <div class="list-title-group">
+                            <h3><i class="fas fa-clock"></i> 最新动态</h3>
+                            <span class="list-subtitle">研究报告与研究笔记</span>
+                        </div>
+                        <div class="tab-switcher">
+                            <button class="tab-btn active" data-tab="reports">
+                                <i class="fas fa-file-alt"></i> 报告
+                            </button>
+                            <button class="tab-btn" data-tab="notes">
+                                <i class="fas fa-sticky-note"></i> 笔记
+                            </button>
+                        </div>
+                    </div>
+                    <div class="list-body">
+                        <div class="timeline" id="latestActivity">
+                            <!-- JS动态生成 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. 快捷入口区 -->
+        <section class="quick-access-section">
+            <h3 class="section-title">
+                <i class="fas fa-th"></i>
+                快捷功能
+            </h3>
+            <div class="quick-grid">
+                <a href="star-market.html" class="quick-item">
+                    <div class="quick-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <span class="quick-label">公司查询</span>
+                </a>
+                <a href="vcpe.html" class="quick-item">
+                    <div class="quick-icon">
+                        <i class="fas fa-filter"></i>
+                    </div>
+                    <span class="quick-label">融资筛选</span>
+                </a>
+                <a href="policy.html" class="quick-item">
+                    <div class="quick-icon">
                         <i class="fas fa-bell"></i>
                     </div>
-                    <h3>实时预警系统</h3>
-                    <p>自定义监控指标，重大事件实时推送，不错过任何投资机会</p>
-                    <a href="features.html" class="feature-link">设置预警 →</a>
-                </div>
+                    <span class="quick-label">政策订阅</span>
+                </a>
+                <a href="report-viewer.html" class="quick-item">
+                    <div class="quick-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <span class="quick-label">报告下载</span>
+                </a>
+                <a href="research.html" class="quick-item">
+                    <div class="quick-icon">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <span class="quick-label">新建笔记</span>
+                </a>
+                <a href="#" class="quick-item" onclick="alert('数据导出功能开发中')">
+                    <div class="quick-icon">
+                        <i class="fas fa-file-export"></i>
+                    </div>
+                    <span class="quick-label">数据导出</span>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 底部 -->
+    <footer class="dashboard-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <i class="fas fa-chart-line"></i>
+                <span>科技金融数据平台</span>
+            </div>
+            <div class="footer-links">
+                <a href="features.html">关于我们</a>
+                <a href="#">使用帮助</a>
+                <a href="#">数据说明</a>
+                <a href="#">隐私政策</a>
             </div>
         </div>
-    </section>
-
-    <!-- CTA区域 -->
-    <section class="cta-section" id="cta">
-        <div class="container">
-            <div class="cta-content">
-                <div class="cta-text">
-                    <h2>开始您的研究之旅</h2>
-                    <p>获取深度研究报告和数据洞察，把握科技创新投资先机</p>
-                </div>
-                <div class="cta-actions">
-                    <a href="report-viewer.html" class="cta-btn">
-                        <i class="fas fa-download"></i> 下载报告
-                    </a>
-                    <a href="#" class="cta-btn-outline" onclick="showSubscribeModal()">
-                        <i class="fas fa-envelope"></i> 订阅更新
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <div class="container">
-            <p>© 2026 Stay Hungry | 数据仅供研究参考</p>
-            <p>Stay hungry, stay foolish. 保持饥饿，保持愚蠢。</p>
+        <div class="footer-bottom">
+            <p>© 2026 科技金融数据平台 | 数据仅供研究参考</p>
+            <p class="update-info">
+                <i class="fas fa-sync-alt"></i>
+                数据更新于: <span id="lastUpdateTime">2026-03-10 14:30:00</span>
+                | 下次更新: <span id="nextUpdateTime">2026-03-11 08:00:00</span>
+            </p>
         </div>
     </footer>
 
-    <script>
-        // ==================== 汉堡菜单 ====================
-        const hamburgerBtn = document.getElementById('hamburgerBtn');
-        const mainNav = document.getElementById('mainNav');
-        
-        hamburgerBtn.addEventListener('click', () => {
-            hamburgerBtn.classList.toggle('active');
-            mainNav.classList.toggle('active');
-            document.body.style.overflow = mainNav.classList.contains('active') ? 'hidden' : '';
-        });
-        
-        // 点击导航链接后关闭菜单
-        document.querySelectorAll('nav a').forEach(link => {
-            link.addEventListener('click', () => {
-                hamburgerBtn.classList.remove('active');
-                mainNav.classList.remove('active');
-                document.body.style.overflow = '';
-            });
-        });
-        
-        // ==================== 报告数据 ====================
-        const reports = [
-            {
-                file: 'policy_analysis_2026-03-08.md',
-                title: '科创金融政策深度解读',
-                date: '2026-03-08',
-                type: 'policy',
-                typeLabel: '政策解读',
-                desc: '深度解析科技保险政策：摘要、背景、行业影响、VC/科创板影响、研究者评论'
-            },
-            {
-                file: 'vc_analysis_2026-03-08.md',
-                title: 'VC投资市场日报',
-                date: '2026-03-08',
-                type: 'vc',
-                typeLabel: 'VC/PE研究',
-                desc: '8起重大投融资事件深度分析，总投资规模4.3亿美元，涵盖AI、生物医药、半导体等赛道'
-            },
-            {
-                file: 'vcpe_report_2026-03-07.md',
-                title: 'VC/PE投资市场分析报告',
-                date: '2026-03-07',
-                type: 'vc',
-                typeLabel: 'VC/PE研究',
-                desc: '月度VC/PE市场概况、热门赛道和活跃机构排名，红杉、高瓴等头部机构动态'
-            },
-            {
-                file: 'star_market_report_2026-03-07.md',
-                title: '科创板市场深度报告',
-                date: '2026-03-07',
-                type: 'market',
-                typeLabel: '市场分析',
-                desc: '科创板上市公司分析、市值排名和行业分布，中芯国际、金山办公等龙头企业研究'
-            },
-            {
-                file: 'market_report_2026-03-07.md',
-                title: '科创板市场分析报告',
-                date: '2026-03-07',
-                type: 'market',
-                typeLabel: '市场分析',
-                desc: '科创板市场概况和IPO动态，近12个月IPO数量94家，募资总额1,457亿元'
-            },
-            {
-                file: 'policy_digest_2026-03-07.md',
-                title: '科技金融政策周报',
-                date: '2026-03-07',
-                type: 'policy',
-                typeLabel: '政策解读',
-                desc: '本周科技金融相关政策梳理和影响分析，涵盖科技保险、科技成果转化等领域'
-            }
-        ];
-        
-        // ==================== 生成报告卡片 ====================
-        function generateReportCards(filterType = 'all') {
-            const container = document.getElementById('reportsGrid');
-            const filteredReports = filterType === 'all' 
-                ? reports 
-                : reports.filter(r => r.type === filterType);
-            
-            container.innerHTML = filteredReports.map((report, index) => `
-                <div class="report-card animate-fadeInUp" style="animation-delay: ${index * 0.1}s">
-                    <div class="report-card-header">
-                        <span class="report-type-badge">${report.typeLabel}</span>
-                        <h3 class="report-card-title">${report.title}</h3>
-                    </div>
-                    <div class="report-card-body">
-                        <div class="report-date">
-                            <i class="far fa-calendar-alt"></i>
-                            ${report.date}
-                        </div>
-                        <p class="report-summary">${report.desc}</p>
-                        <div class="report-card-footer">
-                            <span style="color: var(--text-muted); font-size: 13px;">
-                                <i class="far fa-file-alt" style="margin-right: 5px;"></i>
-                                深度报告
-                            </span>
-                            <a href="report-viewer.html?file=${report.file}" class="read-more-btn">
-                                阅读报告 <i class="fas fa-arrow-right" style="margin-left: 5px;"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        // ==================== 筛选报告 ====================
-        document.querySelectorAll('.reports-section .filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                // 更新按钮状态
-                document.querySelectorAll('.reports-section .filter-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                
-                // 重新生成卡片
-                generateReportCards(this.dataset.filter);
-            });
-        });
-        
-        // ==================== 指标卡片交互 ====================
-        document.querySelectorAll('.metric-card').forEach(card => {
-            card.addEventListener('click', function() {
-                document.querySelectorAll('.metric-card').forEach(c => c.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-        
-        // ==================== 订阅弹窗 ====================
-        function showSubscribeModal() {
-            alert('订阅功能即将上线！\n\n您可以通过以下方式获取更新：\n1. 关注GitHub仓库获取最新代码\n2. 每日访问查看最新报告\n3. 收藏本页面随时查看');
-        }
-        
-        // ==================== 页面加载完成后初始化 ====================
-        document.addEventListener('DOMContentLoaded', function() {
-            generateReportCards();
-        });
-    </script>
+    <script src="static/js/dashboard.js"></script>
 </body>
 </html>

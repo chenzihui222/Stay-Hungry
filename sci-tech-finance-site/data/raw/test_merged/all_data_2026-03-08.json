@@ -1,0 +1,134 @@
+{
+  "export_date": "2026-03-08",
+  "total_items": 10,
+  "type_summary": {
+    "market": 4,
+    "vc": 3,
+    "policy": 3
+  },
+  "source_summary": {
+    "测试": 10
+  },
+  "items": [
+    {
+      "id": "b3da62397d90",
+      "date": "2026-03-08",
+      "title": "测试数据1",
+      "type": "vc",
+      "content": "测试内容",
+      "source": "测试",
+      "url": "",
+      "tags": [],
+      "metadata": {},
+      "created_at": "2026-03-08 11:17:20"
+    },
+    {
+      "id": "cd283ad88196",
+      "date": "2026-03-08",
+      "title": "测试数据4",
+      "type": "vc",
+      "content": "测试内容",
+      "source": "测试",
+      "url": "",
+      "tags": [],
+      "metadata": {},
+      "created_at": "2026-03-08 11:17:20"
+    },
+    {
+      "id": "4bc1bbf36b0f",
+      "date": "2026-03-08",
+      "title": "测试数据7",
+      "type": "vc",
+      "content": "测试内容",
+      "source": "测试",
+      "url": "",
+      "tags": [],
+      "metadata": {},
+      "created_at": "2026-03-08 11:17:20"
+    },
+    {
+      "id": "938a9c3403a2",
+      "date": "2026-03-08",
+      "title": "测试数据2",
+      "type": "policy",
+      "content": "测试内容",
+      "source": "测试",
+      "url": "",
+      "tags": [],
+      "metadata": {},
+      "created_at": "2026-03-08 11:17:20"
+    },
+    {
+      "id": "7276b337f71d",
+      "date": "2026-03-08",
+      "title": "测试数据5",
+      "type": "policy",
+      "content": "测试内容",
+      "source": "测试",
+      "url": "",
+      "tags": [],
+      "metadata": {},
+      "created_at": "2026-03-08 11:17:20"
+    },
+    {
+      "id": "e12a8d9123a9",
+      "date": "2026-03-08",
+      "title": "测试数据8",
+      "type": "policy",
+      "content": "测试内容",
+      "source": "测试",
+      "url": "",
+      "tags": [],
+      "metadata": {},
+      "created_at": "2026-03-08 11:17:20"
+    },
+    {
+      "id": "f4e8db5d558e",
+      "date": "2026-03-08",
+      "title": "测试数据0",
+      "type": "market",
+      "content": "测试内容",
+      "source": "测试",
+      "url": "",
+      "tags": [],
+      "metadata": {},
+      "created_at": "2026-03-08 11:17:20"
+    },
+    {
+      "id": "fd811df50926",
+      "date": "2026-03-08",
+      "title": "测试数据3",
+      "type": "market",
+      "content": "测试内容",
+      "source": "测试",
+      "url": "",
+      "tags": [],
+      "metadata": {},
+      "created_at": "2026-03-08 11:17:20"
+    },
+    {
+      "id": "dbcbba13aa4e",
+      "date": "2026-03-08",
+      "title": "测试数据6",
+      "type": "market",
+      "content": "测试内容",
+      "source": "测试",
+      "url": "",
+      "tags": [],
+      "metadata": {},
+      "created_at": "2026-03-08 11:17:20"
+    },
+    {
+      "id": "cf6f0f6459e1",
+      "date": "2026-03-08",
+      "title": "测试数据9",
+      "type": "market",
+      "content": "测试内容",
+      "source": "测试",
+      "url": "",
+      "tags": [],
+      "metadata": {},
+      "created_at": "2026-03-08 11:17:20"
+    }
+  ]
+}

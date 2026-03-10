@@ -351,6 +351,64 @@
             transform: none;
         }
         
+        /* ==================== 主 Tab 样式（笔记编辑 / 知识图谱）==================== */
+        .note-tabs {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+            padding: var(--spacing-sm);
+            background: rgba(30, 58, 95, 0.05);
+            border-radius: 12px;
+            width: fit-content;
+        }
+        
+        .note-tabs .tab-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .note-tabs .tab-btn:hover {
+            color: var(--primary-color);
+            background: rgba(30, 58, 95, 0.05);
+        }
+        
+        .note-tabs .tab-btn.active {
+            background: white;
+            color: var(--primary-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Tab 内容面板 */
+        .tab-panel {
+            display: none;
+        }
+        
+        .tab-panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
         /* ==================== 学习图谱样式 ==================== */
         
         /* 时间维度切换 */
@@ -846,6 +904,90 @@
             padding-right: 40px;
             margin-top: 0;
         }
+        
+        /* ===== 关联报告区域样式（研究工作流） ===== */
+        .linked-report-info {
+            margin: 1rem 0;
+            padding: 0.75rem 1rem;
+            background: linear-gradient(135deg, #dbeafe 0%, #e0f2fe 100%);
+            border-radius: 8px;
+            border-left: 4px solid #2563eb;
+        }
+        
+        .linked-report-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #1e40af;
+            flex-wrap: wrap;
+        }
+        
+        .linked-report-badge i {
+            color: #2563eb;
+        }
+        
+        .linked-report-link {
+            color: #1e40af;
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px dotted #1e40af;
+            transition: all 0.2s;
+        }
+        
+        .linked-report-link:hover {
+            color: #1e3a5f;
+            border-bottom-style: solid;
+        }
+        
+        .remove-link-btn {
+            margin-left: auto;
+            padding: 0.25rem 0.5rem;
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .remove-link-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+        
+        /* 通知动画 */
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        
+        /* 笔记列表中显示关联报告 */
+        .note-linked-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            color: #2563eb;
+            margin-top: 0.25rem;
+        }
     </style>
 </head>
 <body>
@@ -903,15 +1045,13 @@
         <!-- 主要内容区域（登录后显示） -->
         <div id="mainContent" style="display: none; margin: 0; padding: 0;">
             <!-- 标签页切换 -->
-            <div class="tabs-container">
-                <div class="tabs-nav">
-                    <button class="tab-btn active" onclick="switchTab('editor')">📝 笔记编辑</button>
-                    <button class="tab-btn" onclick="switchTab('learning-map')">📊 学习图谱</button>
-                </div>
+            <div class="note-tabs">
+                <button class="tab-btn active" data-tab="editor" onclick="switchMainTab('editor')">📝 笔记编辑</button>
+                <button class="tab-btn" data-tab="graph" onclick="switchMainTab('graph')">🧠 知识图谱</button>
             </div>
             
             <!-- 笔记编辑标签页 -->
-            <div class="tab-content active" id="editorTab">
+            <div id="editor" class="tab-panel active">
                 <div class="notes-container">
                     <!-- 侧边栏：笔记列表 -->
                     <aside class="notes-sidebar">
@@ -951,8 +1091,8 @@
                 </div>
             </div>
             
-            <!-- 学习图谱标签页 -->
-            <div class="tab-content" id="learningMapTab">
+            <!-- 知识图谱标签页 -->
+            <div id="graph" class="tab-panel">
                 <!-- 时间维度切换 -->
                 <div class="time-dimension-switcher">
                     <button class="dimension-btn active" onclick="switchDimension('year')" data-dimension="year">📅 年视图</button>
@@ -981,8 +1121,18 @@
                     </div>
                 </div>
                 
+                <!-- 视图切换 -->
+                <div class="view-switcher">
+                    <button class="view-switch-btn active" onclick="switchMapView('heatmap')">
+                        <i class="fas fa-calendar-alt"></i> 学习热力图
+                    </button>
+                    <button class="view-switch-btn" onclick="switchMapView('knowledge-graph')">
+                        <i class="fas fa-project-diagram"></i> 知识图谱
+                    </button>
+                </div>
+                
                 <!-- 热力图容器 -->
-                <div class="heatmap-container">
+                <div class="heatmap-container" id="heatmapContainer">
                     <div class="heatmap-header">
                         <h3 class="heatmap-title" id="heatmapTitle">学习热力图</h3>
                         <div class="heatmap-nav">
@@ -1052,6 +1202,51 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- 知识图谱容器 -->
+                <div class="knowledge-graph-container" id="knowledgeGraphContainer" style="display: none;">
+                    <div class="knowledge-graph-header">
+                        <h3 class="knowledge-graph-title">
+                            <i class="fas fa-project-diagram"></i> 研究知识图谱
+                        </h3>
+                        <div class="knowledge-graph-controls">
+                            <button class="graph-control-btn" onclick="resetGraphLayout()" title="重置布局">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                            <button class="graph-control-btn" onclick="fitGraph()" title="适应屏幕">
+                                <i class="fas fa-compress-arrows-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 图例 -->
+                    <div class="graph-legend">
+                        <div class="legend-item">
+                            <div class="legend-node report-node"></div>
+                            <span>研究报告</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-node note-node"></div>
+                            <span>研究笔记</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-node tag-node"></div>
+                            <span>标签</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Cytoscape 图谱容器 -->
+                    <div id="cy" class="cy-container"></div>
+                    
+                    <!-- 节点信息面板 -->
+                    <div class="node-info-panel" id="nodeInfoPanel" style="display: none;">
+                        <div class="node-info-header">
+                            <h4 id="nodeInfoTitle">节点信息</h4>
+                            <button class="close-info-btn" onclick="closeNodeInfo()">&times;</button>
+                        </div>
+                        <div class="node-info-content" id="nodeInfoContent"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -1072,6 +1267,238 @@
         </div>
     </footer>
 
+    <!-- Cytoscape.js for Knowledge Graph -->
+    <script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
+    
+    <style>
+        /* ==================== 视图切换器 ==================== */
+        .view-switcher {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+            padding: var(--spacing-sm);
+            background: var(--bg-light);
+            border-radius: 12px;
+            width: fit-content;
+        }
+        
+        .view-switch-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: 10px 20px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .view-switch-btn:hover {
+            color: var(--primary-color);
+            background: rgba(30, 58, 95, 0.05);
+        }
+        
+        .view-switch-btn.active {
+            background: white;
+            color: var(--primary-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* ==================== 知识图谱容器 ==================== */
+        .knowledge-graph-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(30, 58, 95, 0.08);
+            padding: var(--spacing-lg);
+            border: 1px solid var(--border-color);
+        }
+        
+        .knowledge-graph-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .knowledge-graph-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0;
+        }
+        
+        .knowledge-graph-title i {
+            margin-right: 8px;
+        }
+        
+        .knowledge-graph-controls {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+        
+        .graph-control-btn {
+            width: 36px;
+            height: 36px;
+            background: var(--bg-light);
+            border: none;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .graph-control-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        /* 图例 */
+        .graph-legend {
+            display: flex;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+            padding: var(--spacing-sm);
+            background: var(--bg-light);
+            border-radius: 8px;
+            width: fit-content;
+        }
+        
+        .graph-legend .legend-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .legend-node {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+        
+        .legend-node.report-node {
+            background: #1e3a5f;
+        }
+        
+        .legend-node.note-node {
+            background: #10b981;
+        }
+        
+        .legend-node.tag-node {
+            background: #f59e0b;
+        }
+        
+        /* Cytoscape 容器 */
+        .cy-container {
+            width: 100%;
+            height: 600px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+        
+        /* 节点信息面板 */
+        .node-info-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            z-index: 100;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .node-info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .node-info-header h4 {
+            margin: 0;
+            font-size: 16px;
+            color: var(--primary-color);
+        }
+        
+        .close-info-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .close-info-btn:hover {
+            color: var(--color-error);
+        }
+        
+        .node-info-content {
+            padding: var(--spacing-md);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .node-info-content p {
+            margin: 0 0 var(--spacing-sm) 0;
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .node-info-content .info-label {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .node-info-content .info-link {
+            color: var(--primary-light);
+            text-decoration: none;
+        }
+        
+        .node-info-content .info-link:hover {
+            text-decoration: underline;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .cy-container {
+                height: 400px;
+            }
+            
+            .node-info-panel {
+                width: calc(100% - 40px);
+                right: 20px;
+                left: 20px;
+            }
+        }
+    </style>
+    
     <script>
         // ==================== 全局变量 ====================
         let currentUser = null;
@@ -1083,7 +1510,188 @@
         // ==================== 初始化 ====================
         window.onload = function() {
             checkLoginStatus();
+            
+            // 检查 URL 参数，处理从报告页面跳转过来的情况
+            checkUrlParams();
         };
+        
+        // ==================== URL 参数处理（研究工作流）====================
+        function checkUrlParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const action = urlParams.get('action');
+            
+            if (action === 'create-note') {
+                // 从报告页面跳转过来，自动创建笔记
+                const reportData = {
+                    id: urlParams.get('report-id'),
+                    title: decodeURIComponent(urlParams.get('report-title') || ''),
+                    summary: decodeURIComponent(urlParams.get('report-summary') || ''),
+                    date: urlParams.get('report-date'),
+                    author: decodeURIComponent(urlParams.get('report-author') || ''),
+                    url: decodeURIComponent(urlParams.get('report-url') || '')
+                };
+                
+                // 登录后才能创建笔记
+                if (!currentUser) {
+                    // 保存报告数据到 sessionStorage，登录后使用
+                    sessionStorage.setItem('pendingReportData', JSON.stringify(reportData));
+                    alert('请先登录，登录后将自动为您创建研究笔记。');
+                    return;
+                }
+                
+                // 自动创建笔记
+                createNoteFromReport(reportData);
+            }
+        }
+        
+        // 从报告创建笔记
+        function createNoteFromReport(reportData) {
+            // 切换到编辑器标签
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelector('.tab-btn[onclick="switchTab(\'editor\')"]').classList.add('active');
+            document.getElementById('editorTab').classList.add('active');
+            
+            // 创建新笔记
+            currentNoteId = 'note_' + Date.now();
+            
+            // 设置标题
+            const noteTitle = `研究笔记 - ${reportData.title}`;
+            document.getElementById('noteTitle').value = noteTitle;
+            
+            // 生成笔记内容模板
+            const noteContent = generateNoteTemplate(reportData);
+            document.getElementById('noteContent').value = noteContent;
+            
+            // 显示关联报告信息
+            displayLinkedReport(reportData);
+            
+            // 更新状态
+            document.getElementById('lastSaved').textContent = '尚未保存（从报告自动生成）';
+            
+            // 清除高亮
+            document.querySelectorAll('.note-item').forEach(item => item.classList.remove('active'));
+            
+            // 聚焦到编辑器
+            document.getElementById('noteContent').focus();
+            
+            // 显示提示
+            showNotification('✅ 已根据报告自动生成笔记模板，请补充您的研究思考。');
+        }
+        
+        // 生成笔记模板
+        function generateNoteTemplate(reportData) {
+            const today = new Date().toLocaleDateString('zh-CN');
+            
+            return `# 报告阅读笔记
+
+## 📄 来源报告
+
+- **报告标题**：${reportData.title}
+- **发布时间**：${reportData.date}
+- **发布机构**：${reportData.author}
+- **原文链接**：${reportData.url}
+
+## 📝 报告摘要
+
+${reportData.summary}
+
+## 💡 研究思考
+
+（请在此记录您的分析和思考...）
+
+### 核心观点
+
+- 
+- 
+- 
+
+### 关键数据
+
+- 
+- 
+
+### 个人见解
+
+
+
+## 🔗 延伸阅读
+
+- 
+- 
+
+---
+*笔记创建于：${today}*
+*关联报告：${reportData.title}*`;
+        }
+        
+        // 显示关联报告信息
+        function displayLinkedReport(reportData) {
+            // 检查是否已存在关联报告区域
+            let linkedReportDiv = document.getElementById('linkedReportInfo');
+            
+            if (!linkedReportDiv) {
+                // 创建关联报告显示区域
+                linkedReportDiv = document.createElement('div');
+                linkedReportDiv.id = 'linkedReportInfo';
+                linkedReportDiv.className = 'linked-report-info';
+                
+                // 插入到编辑器标题下方
+                const titleInput = document.getElementById('noteTitle');
+                titleInput.parentNode.insertBefore(linkedReportDiv, titleInput.nextSibling);
+            }
+            
+            // 设置内容
+            linkedReportDiv.innerHTML = `
+                <div class="linked-report-badge">
+                    <i class="fas fa-link"></i>
+                    <span>关联报告：</span>
+                    <a href="${reportData.url}" target="_blank" class="linked-report-link">${reportData.title}</a>
+                    <button class="remove-link-btn" onclick="removeLinkedReport()" title="取消关联">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            // 保存关联报告数据到当前笔记
+            window.currentLinkedReport = reportData;
+        }
+        
+        // 取消关联报告
+        function removeLinkedReport() {
+            const linkedReportDiv = document.getElementById('linkedReportInfo');
+            if (linkedReportDiv) {
+                linkedReportDiv.remove();
+            }
+            window.currentLinkedReport = null;
+        }
+        
+        // 显示通知
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #10b981, #059669);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 1000;
+                font-weight: 500;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 5000);
+        }
         
         // ==================== 登录功能 ====================
         function checkLoginStatus() {
@@ -1135,6 +1743,18 @@
             loadNotes();
             updateLearningStats();
             renderHeatmap();
+            
+            // 检查是否有待处理的报告数据（从报告页面跳转过来但之前未登录）
+            const pendingReportData = sessionStorage.getItem('pendingReportData');
+            if (pendingReportData) {
+                const reportData = JSON.parse(pendingReportData);
+                sessionStorage.removeItem('pendingReportData');
+                
+                // 延迟一点执行，确保UI已加载完成
+                setTimeout(() => {
+                    createNoteFromReport(reportData);
+                }, 500);
+            }
         }
         
         function showLoggedOutUI() {
@@ -1145,16 +1765,37 @@
         }
         
         // ==================== 标签页切换 ====================
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
+        // ==================== 主 Tab 切换（笔记编辑 / 知识图谱）====================
+        function switchMainTab(tabName) {
+            // 更新 Tab 按钮状态
+            document.querySelectorAll('.note-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
-            document.getElementById(tabName + 'Tab').classList.add('active');
             
-            if (tabName === 'learning-map') {
+            // 更新内容面板
+            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            
+            // 如果切换到知识图谱，初始化图谱
+            if (tabName === 'graph') {
                 updateLearningStats();
                 renderHeatmap();
+                
+                // 初始化知识图谱（如果尚未初始化）
+                if (!cy) {
+                    setTimeout(() => {
+                        initKnowledgeGraph();
+                    }, 100);
+                }
+            }
+        }
+        
+        // ==================== 学习图谱内部 Tab 切换（保留用于兼容）====================
+        function switchTab(tabName) {
+            // 这个函数保留用于学习图谱内部视图切换
+            if (tabName === 'editor') {
+                switchMainTab('editor');
+            } else if (tabName === 'learning-map') {
+                switchMainTab('graph');
             }
         }
         
@@ -1191,6 +1832,12 @@
             listContainer.innerHTML = notes.map(note => `
                 <div class="note-item ${note.id === currentNoteId ? 'active' : ''}" onclick="loadNote('${note.id}')">
                     <div class="note-item-title">${escapeHtml(note.title || '无标题')}</div>
+                    ${note.linkedReport ? `
+                        <div class="note-linked-indicator">
+                            <i class="fas fa-link"></i>
+                            <span>关联报告</span>
+                        </div>
+                    ` : ''}
                     <div class="note-item-date">${formatDate(note.updatedAt)}</div>
                     <button class="delete-note-btn" onclick="event.stopPropagation(); deleteNote('${note.id}')">删除</button>
                 </div>
@@ -1202,6 +1849,10 @@
             document.getElementById('noteTitle').value = '';
             document.getElementById('noteContent').value = '';
             document.getElementById('lastSaved').textContent = '尚未保存';
+            
+            // 清除关联报告
+            removeLinkedReport();
+            window.currentLinkedReport = null;
             
             document.querySelectorAll('.note-item').forEach(item => item.classList.remove('active'));
             document.getElementById('noteTitle').focus();
@@ -1215,6 +1866,15 @@
             document.getElementById('noteTitle').value = note.title;
             document.getElementById('noteContent').value = note.content;
             document.getElementById('lastSaved').textContent = '上次保存：' + formatDate(note.updatedAt);
+            
+            // 处理关联报告
+            if (note.linkedReport) {
+                window.currentLinkedReport = note.linkedReport;
+                displayLinkedReport(note.linkedReport);
+            } else {
+                removeLinkedReport();
+                window.currentLinkedReport = null;
+            }
             
             renderNotesList();
         }
@@ -1236,7 +1896,8 @@
                 title: title,
                 content: content,
                 createdAt: noteIndex >= 0 ? notes[noteIndex].createdAt : now,
-                updatedAt: now
+                updatedAt: now,
+                linkedReport: window.currentLinkedReport || null  // 关联报告信息
             };
             
             if (noteIndex >= 0) {
@@ -1668,6 +2329,402 @@
                 saveNote();
             }
         }, 30000);
+        
+        // ==================== 知识图谱功能 ====================
+        let cy = null; // Cytoscape 实例
+        
+        /**
+         * 切换视图（热力图 / 知识图谱）
+         */
+        function switchMapView(viewName) {
+            // 更新按钮状态
+            document.querySelectorAll('.view-switch-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 切换容器显示
+            if (viewName === 'heatmap') {
+                document.getElementById('heatmapContainer').style.display = 'block';
+                document.getElementById('knowledgeGraphContainer').style.display = 'none';
+            } else if (viewName === 'knowledge-graph') {
+                document.getElementById('heatmapContainer').style.display = 'none';
+                document.getElementById('knowledgeGraphContainer').style.display = 'block';
+                
+                // 初始化知识图谱（如果尚未初始化）
+                if (!cy) {
+                    initKnowledgeGraph();
+                }
+            }
+        }
+        
+        /**
+         * 初始化知识图谱
+         */
+        function initKnowledgeGraph() {
+            const container = document.getElementById('cy');
+            
+            if (!container) {
+                console.error('Cytoscape container not found');
+                return;
+            }
+            
+            // 生成示例数据
+            const graphData = generateGraphData();
+            
+            // 初始化 Cytoscape
+            cy = cytoscape({
+                container: container,
+                elements: graphData,
+                
+                style: [
+                    // 报告节点样式
+                    {
+                        selector: 'node[type="report"]',
+                        style: {
+                            'background-color': '#1e3a5f',
+                            'label': 'data(label)',
+                            'width': 50,
+                            'height': 50,
+                            'font-size': '12px',
+                            'font-weight': 'bold',
+                            'color': '#1e3a5f',
+                            'text-valign': 'bottom',
+                            'text-halign': 'center',
+                            'text-margin-y': 8,
+                            'border-width': 3,
+                            'border-color': '#ffffff',
+                            'border-opacity': 1,
+                            'shadow-blur': 10,
+                            'shadow-color': '#1e3a5f',
+                            'shadow-opacity': 0.3
+                        }
+                    },
+                    // 笔记节点样式
+                    {
+                        selector: 'node[type="note"]',
+                        style: {
+                            'background-color': '#10b981',
+                            'label': 'data(label)',
+                            'width': 40,
+                            'height': 40,
+                            'font-size': '11px',
+                            'color': '#065f46',
+                            'text-valign': 'bottom',
+                            'text-halign': 'center',
+                            'text-margin-y': 6,
+                            'border-width': 2,
+                            'border-color': '#ffffff',
+                            'border-opacity': 1
+                        }
+                    },
+                    // 标签节点样式
+                    {
+                        selector: 'node[type="tag"]',
+                        style: {
+                            'background-color': '#f59e0b',
+                            'label': 'data(label)',
+                            'width': 30,
+                            'height': 30,
+                            'font-size': '10px',
+                            'color': '#92400e',
+                            'text-valign': 'bottom',
+                            'text-halign': 'center',
+                            'text-margin-y': 4,
+                            'border-width': 2,
+                            'border-color': '#ffffff',
+                            'border-opacity': 1,
+                            'shape': 'rectangle'
+                        }
+                    },
+                    // 报告到笔记的边
+                    {
+                        selector: 'edge[type="report-note"]',
+                        style: {
+                            'width': 2,
+                            'line-color': '#94a3b8',
+                            'target-arrow-color': '#94a3b8',
+                            'target-arrow-shape': 'triangle',
+                            'curve-style': 'bezier',
+                            'arrow-scale': 1.2
+                        }
+                    },
+                    // 笔记到标签的边
+                    {
+                        selector: 'edge[type="note-tag"]',
+                        style: {
+                            'width': 1.5,
+                            'line-color': '#cbd5e1',
+                            'target-arrow-color': '#cbd5e1',
+                            'target-arrow-shape': 'triangle',
+                            'curve-style': 'bezier',
+                            'line-style': 'dashed',
+                            'arrow-scale': 1
+                        }
+                    },
+                    // 选中状态
+                    {
+                        selector: ':selected',
+                        style: {
+                            'border-width': 4,
+                            'border-color': '#2563eb',
+                            'border-opacity': 1
+                        }
+                    }
+                ],
+                
+                layout: {
+                    name: 'cose',
+                    padding: 50,
+                    nodeOverlap: 20,
+                    refresh: 20,
+                    fit: true,
+                    randomize: false,
+                    componentSpacing: 100,
+                    nodeRepulsion: 400000,
+                    edgeElasticity: 100,
+                    nestingFactor: 5,
+                    gravity: 80,
+                    numIter: 1000,
+                    initialTemp: 200,
+                    coolingFactor: 0.95,
+                    minTemp: 1.0
+                }
+            });
+            
+            // 添加点击事件
+            cy.on('tap', 'node', function(evt) {
+                const node = evt.target;
+                showNodeInfo(node);
+            });
+            
+            // 添加悬浮提示
+            cy.on('mouseover', 'node', function(evt) {
+                document.body.style.cursor = 'pointer';
+            });
+            
+            cy.on('mouseout', 'node', function(evt) {
+                document.body.style.cursor = 'default';
+            });
+            
+            // 双击空白处关闭信息面板
+            cy.on('tap', function(evt) {
+                if (evt.target === cy) {
+                    closeNodeInfo();
+                }
+            });
+        }
+        
+        /**
+         * 生成知识图谱数据
+         */
+        function generateGraphData() {
+            const data = [];
+            
+            // 示例报告数据
+            const reports = [
+                { id: 'r1', label: '科创板IPO分析', date: '2026-03-08', type: '科创板' },
+                { id: 'r2', label: 'AI投资热力图', date: '2026-03-07', type: 'VC/PE' },
+                { id: 'r3', label: '科技保险政策', date: '2026-03-08', type: '政策' },
+                { id: 'r4', label: '半导体估值分析', date: '2026-03-07', type: '科创板' },
+                { id: 'r5', label: '新能源赛道报告', date: '2026-02-25', type: '行业研究' }
+            ];
+            
+            // 示例笔记数据
+            const notes = [
+                { id: 'n1', label: '笔记-科创板观察', reportId: 'r1', tags: ['科创板', 'IPO'] },
+                { id: 'n2', label: '笔记-AI投资思考', reportId: 'r2', tags: ['AI', '大模型', '投资'] },
+                { id: 'n3', label: '笔记-政策解读', reportId: 'r3', tags: ['政策', '科技保险'] },
+                { id: 'n4', label: '笔记-半导体估值', reportId: 'r4', tags: ['半导体', '估值'] },
+                { id: 'n5', label: '笔记-新能源分析', reportId: 'r5', tags: ['新能源', '光伏'] },
+                { id: 'n6', label: '笔记-AI芯片对比', reportId: 'r2', tags: ['AI芯片', '寒武纪'] }
+            ];
+            
+            // 示例标签数据
+            const tags = [
+                { id: 't1', label: '科创板' },
+                { id: 't2', label: 'IPO' },
+                { id: 't3', label: 'AI' },
+                { id: 't4', label: '大模型' },
+                { id: 't5', label: '投资' },
+                { id: 't6', label: '政策' },
+                { id: 't7', label: '科技保险' },
+                { id: 't8', label: '半导体' },
+                { id: 't9', label: '估值' },
+                { id: 't10', label: '新能源' },
+                { id: 't11', label: '光伏' },
+                { id: 't12', label: 'AI芯片' },
+                { id: 't13', label: '寒武纪' }
+            ];
+            
+            // 添加报告节点
+            reports.forEach(report => {
+                data.push({
+                    data: {
+                        id: report.id,
+                        label: report.label,
+                        type: 'report',
+                        date: report.date,
+                        category: report.type,
+                        url: `report-viewer.html?file=${report.id}.md`
+                    }
+                });
+            });
+            
+            // 添加笔记节点
+            notes.forEach(note => {
+                data.push({
+                    data: {
+                        id: note.id,
+                        label: note.label,
+                        type: 'note',
+                        reportId: note.reportId,
+                        tags: note.tags
+                    }
+                });
+                
+                // 添加报告到笔记的边
+                data.push({
+                    data: {
+                        id: `e-${note.reportId}-${note.id}`,
+                        source: note.reportId,
+                        target: note.id,
+                        type: 'report-note'
+                    }
+                });
+            });
+            
+            // 添加标签节点和边
+            const addedTags = new Set();
+            notes.forEach(note => {
+                note.tags.forEach(tagName => {
+                    const tag = tags.find(t => t.label === tagName);
+                    if (tag && !addedTags.has(tag.id)) {
+                        data.push({
+                            data: {
+                                id: tag.id,
+                                label: tag.label,
+                                type: 'tag'
+                            }
+                        });
+                        addedTags.add(tag.id);
+                    }
+                    
+                    // 添加笔记到标签的边
+                    if (tag) {
+                        data.push({
+                            data: {
+                                id: `e-${note.id}-${tag.id}`,
+                                source: note.id,
+                                target: tag.id,
+                                type: 'note-tag'
+                            }
+                        });
+                    }
+                });
+            });
+            
+            return data;
+        }
+        
+        /**
+         * 显示节点信息
+         */
+        function showNodeInfo(node) {
+            const data = node.data();
+            const panel = document.getElementById('nodeInfoPanel');
+            const title = document.getElementById('nodeInfoTitle');
+            const content = document.getElementById('nodeInfoContent');
+            
+            // 设置标题
+            title.textContent = data.label;
+            
+            // 根据节点类型生成内容
+            let html = '';
+            
+            if (data.type === 'report') {
+                html = `
+                    <p><span class="info-label">类型：</span>研究报告</p>
+                    <p><span class="info-label">分类：</span>${data.category}</p>
+                    <p><span class="info-label">发布时间：</span>${data.date}</p>
+                    <p>
+                        <a href="${data.url}" class="info-link" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> 查看报告
+                        </a>
+                    </p>
+                `;
+            } else if (data.type === 'note') {
+                const reportNode = cy.getElementById(data.reportId);
+                const reportName = reportNode.length > 0 ? reportNode.data('label') : '未知报告';
+                
+                html = `
+                    <p><span class="info-label">类型：</span>研究笔记</p>
+                    <p><span class="info-label">关联报告：</span>${reportName}</p>
+                    <p><span class="info-label">标签：</span>${data.tags.join(', ')}</p>
+                `;
+            } else if (data.type === 'tag') {
+                // 计算关联的笔记数量
+                const connectedNotes = node.connectedEdges().filter(edge => {
+                    return edge.target().data('type') === 'note';
+                });
+                
+                html = `
+                    <p><span class="info-label">类型：</span>标签</p>
+                    <p><span class="info-label">关联笔记：</span>${connectedNotes.length} 篇</p>
+                `;
+            }
+            
+            content.innerHTML = html;
+            panel.style.display = 'block';
+        }
+        
+        /**
+         * 关闭节点信息面板
+         */
+        function closeNodeInfo() {
+            const panel = document.getElementById('nodeInfoPanel');
+            panel.style.display = 'none';
+            
+            // 取消选中
+            if (cy) {
+                cy.$(':selected').unselect();
+            }
+        }
+        
+        /**
+         * 重置图谱布局
+         */
+        function resetGraphLayout() {
+            if (cy) {
+                const layout = cy.layout({
+                    name: 'cose',
+                    padding: 50,
+                    nodeOverlap: 20,
+                    refresh: 20,
+                    fit: true,
+                    randomize: true,
+                    componentSpacing: 100,
+                    nodeRepulsion: 400000,
+                    edgeElasticity: 100,
+                    nestingFactor: 5,
+                    gravity: 80,
+                    numIter: 1000,
+                    initialTemp: 200,
+                    coolingFactor: 0.95,
+                    minTemp: 1.0
+                });
+                layout.run();
+            }
+        }
+        
+        /**
+         * 适应屏幕
+         */
+        function fitGraph() {
+            if (cy) {
+                cy.fit(50);
+            }
+        }
     </script>
 </body>
 </html>

@@ -1,0 +1,241 @@
+/** 
+ * base.css - 基础样式层
+ * 
+ * 职责：
+ * 1. CSS 自定义属性（变量）定义
+ * 2. CSS Reset 和 Normalize
+ * 3. 基础 HTML 元素样式
+ * 4. 字体和排版系统
+ * 5. 工具类
+ * 
+ * 深蓝主题色：#1e3a5f
+ */
+
+/* ==================== Google Fonts ==================== */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap');
+
+/* ==================== CSS 变量定义 ==================== */
+:root {
+    /* 主色调 - 深蓝色系（专业感、科技感） */
+    --primary-color: #1e3a5f;          /* 深蓝主色 */
+    --primary-light: #2563eb;          /* 亮蓝色 */
+    --primary-dark: #0f172a;           /* 暗深蓝色 */
+    
+    /* 辅助色 - 青绿色（用于强调，不过度使用） */
+    --secondary-color: #0891b2;        /* 青绿色 */
+    --accent-color: #06b6d4;           /* 亮青绿 */
+    
+    /* 中性色 - 白色和灰色系 */
+    --bg-color: #f8fafc;               /* 浅灰背景 */
+    --card-bg: #ffffff;                /* 卡片背景（白色） */
+    --bg-light: #f1f5f9;               /* 更浅背景 */
+    
+    /* 文字颜色 - 确保高对比度 */
+    --text-color: #1f2937;             /* 主文字色（深灰，对比度12:1） */
+    --text-secondary: #374151;         /* 次要文字（对比度10:1） */
+    --text-muted: #6b7280;             /* 辅助文字（对比度5.5:1） */
+    --text-light: #9ca3af;             /* 浅色文字 */
+    
+    /* 边框和分隔线 */
+    --border-color: #e5e7eb;           /* 浅灰边框 */
+    --border-light: #f3f4f6;           /* 极浅边框 */
+    
+    /* 渐变 */
+    --gradient-start: #1e3a5f;         /* 渐变起始 */
+    --gradient-end: #2563eb;           /* 渐变结束 */
+    --gradient-accent: linear-gradient(135deg, #0891b2, #06b6d4);
+    
+    /* 功能色 */
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-error: #ef4444;
+    --color-info: #3b82f6;
+
+    /* 间距变量 */
+    --spacing-xs: 8px;
+    --spacing-sm: 16px;
+    --spacing-md: 24px;
+    --spacing-lg: 32px;
+    --spacing-xl: 48px;
+    --spacing-2xl: 64px;
+    
+    /* 字体变量 */
+    --font-body: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'Consolas', 'Monaco', 'Courier New', monospace;
+    
+    /* 圆角 */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    
+    /* 阴影 */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    
+    /* 过渡 */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+}
+
+/* ==================== CSS Reset ==================== */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    min-height: 100vh;
+    font-size: 16px;
+}
+
+/* ==================== 标题层级系统 ==================== */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-body);
+    color: var(--primary-color);
+    line-height: 1.3;
+    font-weight: 700;
+}
+
+h1 {
+    font-size: 42px;
+    font-weight: 800;
+    margin-bottom: var(--spacing-md);
+}
+
+h2 {
+    font-size: 32px;
+    margin-bottom: var(--spacing-md);
+}
+
+h3 {
+    font-size: 24px;
+    margin-bottom: var(--spacing-sm);
+}
+
+h4 {
+    font-size: 20px;
+    margin-bottom: var(--spacing-sm);
+}
+
+h5 {
+    font-size: 18px;
+    margin-bottom: var(--spacing-xs);
+}
+
+h6 {
+    font-size: 16px;
+    margin-bottom: var(--spacing-xs);
+}
+
+/* ==================== 文本元素 ==================== */
+p {
+    font-size: 16px;
+    line-height: 1.8;
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-secondary);
+}
+
+a {
+    color: var(--primary-light);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+/* ==================== 列表 ==================== */
+ul, ol {
+    margin-bottom: var(--spacing-md);
+    padding-left: var(--spacing-lg);
+}
+
+li {
+    margin-bottom: var(--spacing-xs);
+    color: var(--text-secondary);
+}
+
+/* ==================== 表单元素 ==================== */
+input, textarea, select {
+    font-family: var(--font-body);
+    font-size: 16px;
+    color: var(--text-color);
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+}
+
+/* ==================== 特殊文本类 ==================== */
+.text-primary { color: var(--primary-color); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted { color: var(--text-muted); }
+.text-light { color: var(--text-light); }
+.text-white { color: white; }
+
+.text-success { color: var(--color-success); }
+.text-warning { color: var(--color-warning); }
+.text-error { color: var(--color-error); }
+
+/* 数据数字等宽字体 */
+.font-mono {
+    font-family: var(--font-mono);
+    font-feature-settings: 'tnum';
+}
+
+/* 强调文本 */
+em, .italic {
+    font-style: italic;
+}
+
+strong, .bold {
+    font-weight: 700;
+}
+
+small {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+/* ==================== 工具类 ==================== */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.visible {
+    visibility: visible;
+}
+
+.invisible {
+    visibility: hidden;
+}

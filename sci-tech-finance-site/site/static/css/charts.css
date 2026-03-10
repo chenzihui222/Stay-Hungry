@@ -1,0 +1,282 @@
+/** 
+ * charts.css - 图表层
+ * 
+ * 职责：
+ * 1. Chart.js 自定义样式
+ * 2. Plotly.js 自定义样式
+ * 3. 图表容器样式
+ * 4. 图表控件（筛选按钮、图例）
+ * 5. 图表响应式适配
+ * 
+ * 深蓝主题色：#1e3a5f
+ */
+
+/* ==================== 图表容器 ==================== */
+.chart-container {
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
+    position: relative;
+}
+
+.chart-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-sm);
+    padding-bottom: var(--spacing-xs);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.chart-body {
+    position: relative;
+    min-height: 300px;
+}
+
+/* ==================== Plotly 图表自定义样式 ==================== */
+.js-plotly-plot .plotly .gtitle {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    fill: var(--primary-color) !important;
+}
+
+.js-plotly-plot .plotly .xtitle,
+.js-plotly-plot .plotly .ytitle {
+    font-size: 14px !important;
+    fill: var(--text-secondary) !important;
+}
+
+.js-plotly-plot .plotly .g-xtick text,
+.js-plotly-plot .plotly .g-ytick text {
+    font-size: 12px !important;
+    fill: var(--text-muted) !important;
+}
+
+/* Plotly 悬浮提示框样式 */
+.js-plotly-plot .plotly .hovertext {
+    font-size: 13px !important;
+}
+
+/* ==================== Chart.js 自定义样式 ==================== */
+.chartjs-render-monitor {
+    animation: chartjs-render-animation 0.001s;
+}
+
+@keyframes chartjs-render-animation {
+    from { opacity: 0.99; }
+    to { opacity: 1; }
+}
+
+/* ==================== 图表控件 ==================== */
+.chart-controls {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+.chart-control-btn {
+    padding: 8px 16px;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.chart-control-btn:hover {
+    background: var(--bg-light);
+    border-color: var(--primary-light);
+}
+
+.chart-control-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* ==================== 图表筛选器 ==================== */
+.filter-bar {
+    display: flex;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 8px 16px;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.filter-btn:hover {
+    background: var(--bg-light);
+    border-color: var(--primary-light);
+}
+
+.filter-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* ==================== 图表图例 ==================== */
+.chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-light);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: opacity var(--transition-fast);
+}
+
+.legend-item:hover {
+    opacity: 0.7;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+.legend-text {
+    font-weight: 500;
+}
+
+/* ==================== 统计卡片中的图表 ==================== */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-md);
+    margin: var(--spacing-lg) 0;
+}
+
+/* ==================== 图表区块样式 ==================== */
+.charts-section {
+    background: var(--card-bg);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    margin: var(--spacing-lg) 0;
+    box-shadow: 0 4px 6px -1px rgba(30, 58, 95, 0.1);
+}
+
+.charts-section h3 {
+    color: var(--primary-dark);
+    margin-bottom: var(--spacing-lg);
+    font-size: 20px;
+}
+
+/* ==================== 数据表格中的图表区 ==================== */
+.charts {
+    background: var(--card-bg);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    margin: var(--spacing-lg) 0;
+}
+
+/* ==================== 实时数据指示器 ==================== */
+.live-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 13px;
+    color: var(--secondary-color);
+}
+
+.live-indicator::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: var(--secondary-color);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+/* ==================== 数据可视化卡片 ==================== */
+.viz-card {
+    background: white;
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    box-shadow: 0 2px 8px rgba(30, 58, 95, 0.08);
+    border: 1px solid var(--border-color);
+}
+
+.viz-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.viz-card-title {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.viz-card-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--primary-color);
+}
+
+/* ==================== 图表工具提示 ==================== */
+.tooltip {
+    position: absolute;
+    background: rgba(30, 58, 95, 0.95);
+    color: white;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    pointer-events: none;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.tooltip-title {
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.tooltip-value {
+    font-size: 14px;
+}
+
+/* ==================== 图表颜色主题 ==================== */
+.chart-color-primary { color: var(--primary-color); }
+.chart-color-secondary { color: var(--secondary-color); }
+.chart-color-accent { color: var(--accent-color); }
+.chart-color-success { color: var(--color-success); }
+.chart-color-warning { color: var(--color-warning); }
+
+.chart-bg-primary { background-color: var(--primary-color); }
+.chart-bg-secondary { background-color: var(--secondary-color); }
+.chart-bg-accent { background-color: var(--accent-color); }
